@@ -1,0 +1,171 @@
+<template name="homePage">
+
+
+
+
+<!-- NAVIGATIONS END --> 
+<!-- Main Page START -->
+<main id="main">
+  <div id="masthead" style="background-image:url(img/ghee.jpg); background-position:center; background-size:cover; height:300px" >
+    <div class="container"  align="center">
+      <div class="row">
+        <div class="col-md-7" style="color:white">
+          <h1 id="page0" style="font-family: 'Rock Salt', sans-serif;text-shadow: 3px 2px 4px black;">Dosa House</h1>
+          <p class="lead"  style="font-family: 'Montserrat', sans-serif;text-shadow: 1px 2px 2px black;">Quick. Fast. Food</p>
+        </div>
+      </div>
+    </div>
+    <!--/container--> 
+    
+  </div>
+</main>
+
+{{# if haveNotification notification isNotTakingOnlineOrder isStoreClosed }}
+
+          <!-- Notification Alerts -->
+<!--<div class="alert alert-info alert-dismissible text-center" style="box-shadow: 2px 2px 2px rgba(1, 1, 0, 0.2);" role="alert"> -->
+<div class="alert alert-info  alert-dismissible text-center" style="box-shadow: 2px 2px 2px rgba(1, 1, 0, 0.2); background-color:#FEFF82; border: dashed thin  #FFB855;" role="alert">
+
+
+  <button type="button" class=" fa fa-close close" data-dismiss="alert" aria-label="Close"></button>
+
+  {{#each notification_message_session}}
+
+  <h4>  <i class="fa  fa-flag"> &nbsp;</i>  {{this}}</h4>
+
+  {{/each}}
+</div>
+
+
+          <!-- End Notification Alerts -->
+{{/if}}
+<!-- Main Content --> 
+<!-- Main > Start Menus-->
+<div class="col-xs-12" id="menu">
+  <div class="row"  >
+
+      {{#each categoryMenu}}
+
+        {{#if isMenuAvailable Value}}
+
+                    <div align="left" style="padding-left:15px;">
+                      <p>&nbsp;</p>
+                      <p>
+                          <h1 > ♨ {{ Value }} ♨ </h1>
+                      </p>
+
+            {{ #each menu Value }}
+
+                      <div class="col-lg-6" id="{{UniqueId}}">
+                          <div class="the-menu-item {{soldOut fontLine}}">
+                            <div class="image-wrap thumbnail">
+
+                              {{#if isDrink ../Value}}
+
+                                  <i style="color:grey" class="fa fa-coffee fa-2x"></i>
+
+                              {{else}}
+                                  <i style="color:grey" class="fa fa-cutlery fa-2x"></i> 
+
+                               {{/if}}   
+
+                           </div>
+                              <a  href="#">
+                              <div class="the-menu-body">
+                                <h4 class="xsm">{{Name}}</h4>
+                                <p class="small">{{Description}}</p>
+                              </div>
+                              </a>
+                      {{#if isItemAvailable fontLine}}  
+
+                            <div class="prices"> 
+
+                                {{#if isItemInCart UniqueId }}
+
+                                      {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
+                                          <button type="button" class="fa fa-check btn btn-success removecart " data-toggle="tooltip" data-placement="bottom" title='Remove from Cart'>
+                                          <span class="price xsm"> {{currency Charge}} </span>  
+                                        </button>
+ 
+                                       
+                                      {{else}}
+                                          <button type="button" class="fa fa-check btn btn-inverse" data-toggle="tooltip" data-placement="bottom" title='Not accepting online Orders'>
+                                          <span class="price xsm"> {{currency Charge}} </span> 
+                                           </button>
+
+                                        {{/if}}
+
+
+                                {{else}}
+
+                                      {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
+                                        <button type="button" class="fa fa-shopping-cart  btn btn-default addcart" data-toggle="tooltip" data-placement="bottom" title="Add to Cart">
+
+                                        <span class="price xsm"> {{currency Charge}} </span>  
+                                      </button>
+
+
+                                      {{else}}
+
+                                      <button type="button" class="fa fa-shopping-cart  btn btn-btn-inverse" data-toggle="tooltip" data-placement="bottom" title="Not accepting online Orders">
+
+                                        <span class="price xsm"> {{currency Charge}} </span>  
+                                      </button>
+
+
+                                      {{/if}}
+                                  {{/if}}
+                            </div>
+                      {{else}}
+
+                              <div class="prices"> <span class="price xsm">{{ currency Charge}}</span> </div>
+                              <div class="highlight">SOLD OUT</div>  
+                      
+                      {{/if}} 
+                          </div>
+                      </div>
+
+            {{/each}} 
+                      
+
+                      {{#if idOddNumberItems Value}}
+                          <div class="col-lg-6" id="dummy">
+                            <div class="the-menu-item ">
+                                <div>  </div>
+                                  <a  href="#">
+                                      <div class="the-menu-body">
+                                        <h4 class="xsm"></h4>
+                                        <p class="small"></p>
+                                      </div>
+                                  </a>
+                                  <div class="prices"> 
+                                
+
+                                  </div>
+                             </div>     
+                      </div>
+                      {{/if}}
+
+
+          </div>
+
+          {{/if}}
+
+        {{/each}}
+
+  </div>
+</div>
+
+
+
+<!-- Main > End Menus --> 
+<!-- Main Page END -->
+
+
+
+
+
+
+
+
+</template>

@@ -1,0 +1,22 @@
+ <template name="footer">
+
+  <footer id="footer" class="footer">
+      <div class="row"   id="address" style="padding:30px;"> 
+        <div class="copyright col-xs-12 text-center">Powered by Websheets&#8482; </div>
+        
+        <div class="pull-left col-xs-6" align="left"> {{address.Value}}
+          <br>
+          Phone: <a href="tel:{{phoneNumber.Value}}" class="phone">{{phoneNumber.Value}}</a> 
+          <br>
+          Fax: <a href="tel:{{faxNumber.Value}}" class="phone">{{faxNumber.Value}}</a> 
+
+        </div>
+        <div class="pull-right col-xs-6" align="right">
+          <div class="head-social"> <a href="#"><i class="fa fa-twitter fa-2x"></i></a> <br>
+            <a href="#">@dosaexpress</a> </div>
+        </div>
+      </div>
+
+  </footer>
+
+</template>
