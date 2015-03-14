@@ -15,3 +15,7 @@
 
     window.open(url,windowName, width + ' '+ height + ' '+ fullscreen + ' '+ location + ' ' + menubar +' ' + toolbar, false);
 }
+
+    isInteger = function (x) {
+        return (typeof x === 'number') && (x % 1 === 0);
+    };

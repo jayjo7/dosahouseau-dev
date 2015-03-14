@@ -6,7 +6,7 @@
     <div class="minicart-body cart-toggle">
 <form id="contactInfoForm">
       <p>&nbsp; </p>
-      <h2 class="xsm text-uppercase text-center"  style="font-family: 'Rock Salt';">TOGO Order</h2>
+      <h2 class="xsm text-uppercase text-center"  style="font-family: 'Rock Salt'; padding-top    : 30px">TOGO Order</h2>
       <ul class="minicart-list">
 
         {{#each shopCart}}
@@ -38,23 +38,26 @@
 
       
 
+   
         <div class="minicart-total"> Your Contact Information:<br>
           <br>
           <p>
-              <input class="text-warning" id="contactName" name="contactName" placeholder="Name" required>&nbsp;<sub>*</sub>
+              <input class="text-warning" id="contactName" name="contactName" placeholder="Name"   required >&nbsp;<sub>*</sub>
               <br>
               <br>
-              <input type="email" class="text-warning" id="inputEmail" name="email" placeholder="Email" required>&nbsp;<sub>*</sub>
+              <input type="email" class="text-warning" id="inputEmail" name="email" placeholder="Email" required >&nbsp;<sub>*</sub>
               <br>
               <br>
-              <input type="tel" class="text-warning" id="intputPhoneNumber" name="phoneNumber"  placeholder="Phone Number" required>&nbsp;<sub>*</sub>
+              <input type="tel" class="text-warning" id="intputPhoneNumber" name="phoneNumber"  placeholder="Phone - Numbers only" required >&nbsp;<sub>*</sub>
               <br>
               <br>
               <input  type="textarea" maxlength="50" class="text-warning" id="messageToKitchen"  rows="2" name="messageToKitchen"  wrap="hard" placeholder="Message To Kitchen">
             </p>
         </div>
+        <span id='contactInfoError' style="color:red" align='center'></span>
         <br>
-        <button type="submit" class="btn btn btn-success checkout-btn placeOrder">Place Order ( To Go Only )</button>
+        <br>
+        <button type="submit" class="btn btn btn-success checkout-btn placeOrder">Place Order</button>
 
 
       {{/if}}

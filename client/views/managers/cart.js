@@ -106,16 +106,24 @@ Template.cart.events({
                     Meteor.call('addToCart', selectedValue ,product, sessid, this.Name, this.Category, this.Charge);
 
                 }
-                esle
+                else
                 {
-                    this.value = selectedValue;
+                    event.currentTarget.value = this.qty;
                 }
             }
             else
             {
+                if(isInteger(selectedValue))
+                {
 
                     Meteor.call('addToCart', selectedValue ,product, sessid,  this.Name, this.Category, this.Charge);
 
+                }
+                else
+                {
+                    alert( 'Selected item count is not an integer.');
+                    event.currentTarget.value = this.qty;
+                }
             }
   },
 
@@ -123,7 +131,101 @@ Template.cart.events({
 	'submit form': function(event){
 
         event.preventDefault();
+        
+        console.log("Order form submitted");
+        console.log(event.type);
+
+
+        //for(key in event.target)
+        //{
+        //    console.log(key + ' = ' + event.target[key]);
+        //}
+
+        var contactInfo = {};
+
+        contactInfo.phoneNumber = event.target.phoneNumber.value;
+        contactInfo.email=event.target.inputEmail.value;
+        contactInfo.messageToKitchen = event.target.messageToKitchen.value;
+        contactInfo.contactName = event.target.contactName.value;
+        console.log(contactInfo.phoneNumber);
+        console.log(contactInfo.email);
+        console.log(contactInfo.messageToKitchen);
+        console.log(contactInfo.contactName);
+
+        var validationResult = true;
+        var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+
+
+        if(contactInfo.contactName === null || contactInfo.contactName === undefined || contactInfo.contactName.trim()=='')
         {
+            console.log("contactInfo.contactName is not valid" );
+            //event.target.setCustomValidity("Please enter your name.");
+            $contactName = $('#contactName')
+            $contactName .attr('style', 'border-color: red;')
+
+            $contactInfoError = $('#contactInfoError');
+            $contactInfoError.text('Please fill the above highlighted fileds');       
+
+
+            validationResult = false;
+
+        }
+        if(contactInfo.email === null || contactInfo.email === undefined || contactInfo.email.trim()=='')
+        {
+            console.log("contactInfo.email is not valid" );
+           // event.target.setCustomValidity("Please enter your valid email.");
+            $inputEmail = $('#inputEmail')
+            $inputEmail .attr('style', 'border-color: red;')
+            $contactInfoError = $('#contactInfoError');
+            $contactInfoError.text('Please fill the above highlighted fileds');  
+            validationResult = false;
+            
+        }
+        else
+        if(!contactInfo.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))
+        {
+            console.log("Entered contactInfo.email is not valid" );
+           // event.target.setCustomValidity("Please enter your valid email.");
+            $inputEmail = $('#inputEmail')
+            $inputEmail .attr('style', 'border-color: red;')
+            $contactInfoError = $('#contactInfoError');
+            $contactInfoError.text('Please enter a valid email.');  
+            validationResult = false;
+
+
+        }
+
+        if(contactInfo.phoneNumber === null || contactInfo.phoneNumber === undefined || contactInfo.phoneNumber.trim()=='')
+        {
+            console.log("contactInfo.phoneNumberis not valid" );
+            //event.target.setCustomValidity("Please enter your valid phone number.");
+            $intputPhoneNumber = $('#intputPhoneNumber')
+            $intputPhoneNumber .attr('style', 'border-color: red;')
+            $contactInfoError = $('#contactInfoError');
+            $contactInfoError.text('Please fill the above highlighted fileds');  
+
+            validationResult = false;
+            
+        }
+        else
+        if(!contactInfo.phoneNumber.match(/^\d{10}$/) )
+        {
+
+            console.log("Entered but contactInfo.phoneNumberis not valid" );
+            //event.target.setCustomValidity("Please enter your valid phone number.");
+            $intputPhoneNumber = $('#intputPhoneNumber')
+            $intputPhoneNumber .attr('style', 'border-color: red;')
+            $contactInfoError = $('#contactInfoError');
+            $contactInfoError.text('Please enter a valid phone number');  
+
+            validationResult = false;
+
+        }
+        console.log("validationResult = " + validationResult);
+        if(validationResult )
+        {
+
+            {
 
                 var $L = 1200,
                 $menu_navigation = $('#main-nav'),
@@ -150,78 +252,61 @@ Template.cart.events({
 
         
 
-        }
-
-        
-        console.log("Order form submitted");
-        console.log(event.type);
+            }
 
 
-        for(key in event.target)
-        {
-            console.log(key + ' = ' + event.target[key]);
-        }
-
-        var contactInfo = {};
-
-        contactInfo.phoneNumber = event.target.phoneNumber.value;
-        contactInfo.email=event.target.inputEmail.value;
-        contactInfo.messageToKitchen = event.target.messageToKitchen.value;
-        contactInfo.contactName = event.target.contactName.value;
-        console.log(contactInfo.phoneNumber);
-        console.log(contactInfo.email);
-        console.log(contactInfo.messageToKitchen);
-        console.log(contactInfo.contactName);
             var sessid = Session.get('appUUID');
             console.log("Confirming orders... " + sessid);
 
-         var contact
+            var contact
 
-        console.log("contact = " + contactInfo);
+            console.log("contact = " + contactInfo);
 
-        Meteor.call('getNextSequenceValue',function(error, result){
-
-            if(error)
+            Meteor.call('getNextSequenceValue',function(error, result)
             {
-                console.log("Trouble getting the next sequence number");
-            }
-            else
-            {
-                var sequence = result;
+
+                if(error)
+                {
+                    console.log("Trouble getting the next sequence number");
+                }
+                else
+                {
+                    var sequence = result;
        
-                for(var key in sequence)
-                    {
+                    for(var key in sequence)
+                        {
                         console.log("cart.js : " +key + " = " +sequence[key]);
-                    }
-
-                Meteor.call('orderItems',sessid, contactInfo, sequence, function(error, result){
-
-                    if(error)
-                    {
-                        if(result)
-                        {
-                            console.log("Could not insert the order for the session  = " + sessid + "Order = " + JSON.stringify(result, null, 4));
-                        }
-                        else
-                        {
-                            console.log("Could not insert the order for the session  = " + sessid );
                         }
 
-                    }
-                    else
-                    {
-                        console.log("sessid = " + sessid);
-                        console.log("sequence._id= " + sequence._id);
+                        Meteor.call('orderItems',sessid, contactInfo, sequence, function(error, result)
+                        {
+
+                            if(error)
+                            {
+                                if(result)
+                                {
+                                    console.log("Could not insert the order for the session  = " + sessid + "Order = " + JSON.stringify(result, null, 4));
+                                }
+                                else
+                                {
+                                    console.log("Could not insert the order for the session  = " + sessid );
+                                }
+
+                            }
+                            else
+                            {
+                                console.log("sessid = " + sessid);
+                                console.log("sequence._id= " + sequence._id);
 
 
-                        Router.go('confirmation',  {UniqueId: sequence._id});
+                                Router.go('confirmation',  {UniqueId: sequence._id});
 
-                    }
+                            }
 
-                });
-            } 
-
-        });
+                        });
+                } 
+            });
+        }
     },
 
 
