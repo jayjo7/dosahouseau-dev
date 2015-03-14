@@ -121,7 +121,7 @@ Template.cart.events({
                 }
                 else
                 {
-                    alert( 'Selected item count is not an integer.');
+                    alert( 'Please enter a valid number.');
                     event.currentTarget.value = this.qty;
                 }
             }
