@@ -162,6 +162,7 @@ Template.cart.events({
             //event.target.setCustomValidity("Please enter your name.");
             $contactName = $('#contactName')
             $contactName .attr('style', 'border-color: red;')
+            $contactName .attr('title', 'Please enter a name.')
 
             $contactInfoError = $('#contactInfoError');
             $contactInfoError.text('Please fill the above highlighted fileds');       

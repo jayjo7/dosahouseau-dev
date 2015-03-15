@@ -8,7 +8,7 @@ Template.confirmation.helpers({
     {
         console.log('isReady:uniqueId = ' + uniqueId);
         var order = Orders.findOne({UniqueId:uniqueId});
-        if('ready' === order.Status)
+        if(STATE_THREE === order.Status)
         	return true;
         else
         	return false;
@@ -30,7 +30,7 @@ Template.confirmation.helpers({
     {
         console.log('isInProcess:uniqueId = ' + uniqueId);
         var order = Orders.findOne({UniqueId:uniqueId});
-        if('inProcess' === order.Status)
+        if( STATE_TWO === order.Status)
         	return true;
         else
         	return false;
@@ -41,7 +41,7 @@ Template.confirmation.helpers({
     {
         console.log('isInKitchen:uniqueId = ' + uniqueId);
         var order = Orders.findOne({UniqueId:uniqueId});
-        if('inProcess' === order.Status || 'delivered' === order.Status || 'ready' === order.Status)
+        if( STATE_TWO === order.Status || STATE_FOUR === order.Status || STATE_THREE === order.Status)
         	return true;
         else
         	return false;
@@ -52,7 +52,7 @@ Template.confirmation.helpers({
     {
         console.log('isSaleComplete:uniqueId = ' + uniqueId);
         var order = Orders.findOne({UniqueId:uniqueId});
-        if( 'delivered' === order.Status || 'ready' === order.Status)
+        if( STATE_FOUR === order.Status || STATE_THREE === order.Status)
         	return true;
         else
         	return false;
@@ -80,12 +80,12 @@ Template.confirmation.helpers({
 		console.log('message:uniqueId = ' + uniqueId);
         var order = Orders.findOne({UniqueId:uniqueId});
         var messageKey='message_confirmation';
-        if('ready' === order.Status)
+        if(STATE_THREE === order.Status)
 
         	messageKey = 'message_ready';
         	
         else
-		if('delivered' === order.Status)
+		if(STATE_FOUR === order.Status)
 
 			messageKey = 'message_delivered';
 
