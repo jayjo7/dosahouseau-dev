@@ -209,7 +209,7 @@ Template.cart.events({
             
         }
         else
-        if(!contactInfo.phoneNumber.match(/^\d{10}$/) )
+        if(!contactInfo.phoneNumber.match(/^[0-9]{1,10}$/))
         {
 
             console.log("Entered but contactInfo.phoneNumberis not valid" );

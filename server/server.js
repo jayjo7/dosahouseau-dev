@@ -1,5 +1,3 @@
- STATE_ONE   = '1 - Received';
-
 Meteor.methods({
 
   getTax:function(){
