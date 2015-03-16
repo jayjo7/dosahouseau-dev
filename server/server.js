@@ -1,3 +1,5 @@
+ STATE_ONE   = '1 - Received';
+
 Meteor.methods({
 
   getTax:function(){
@@ -128,7 +130,7 @@ Meteor.methods({
         				console.log(key + " = " +sequence[key]);
         			}
 			var order = {};
-			order.Status='new';
+			order.Status=STATE_ONE;
 			order.OrderNumber=sequence.orderNumber;
 			order.UniqueId=sequence._id;
 
