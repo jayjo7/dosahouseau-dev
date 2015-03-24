@@ -1,9 +1,4 @@
-  STATE_ONE   = '1 - Received';
-  STATE_TWO   = '2 - Inprocess';
-  STATE_THREE = '3 - Ready';
-  STATE_FOUR  = '4 - Delivered';
-  
-  function openWindow(url, windowName, percent) {
+function openWindow(url, windowName, percent) {
     var w = 630, h = 440; // default sizes
     if (window.screen) {
         w = window.screen.availWidth * percent / 100;
