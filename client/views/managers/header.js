@@ -93,6 +93,32 @@ Template.header.events({
     	//evt.preventDefault();
 
 
+        console.log('In mainmenutoggle click event');
+
+                var $L = 1200,
+        $menu_navigation = $('#main-nav'),
+        $cart_trigger = $('#cd-cart-trigger'),
+        $hamburger_icon = $('#cd-hamburger-menu'),
+        $lateral_cart = $('#cd-cart'),
+        $shadow_layer = $('#cd-shadow-layer');
+        $body = $('body');
+
+
+        $shadow_layer.removeClass('is-visible');
+        // firefox transitions break when parent overflow is changed, so we need to wait for the end of the trasition to give the body an overflow hidden
+        if( $lateral_cart.hasClass('speed-in') ) {
+            $lateral_cart.removeClass('speed-in').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+                $('body').removeClass('overflow-hidden');
+            });
+            $menu_navigation.removeClass('speed-in');
+        } else {
+            $menu_navigation.removeClass('speed-in').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+                $('body').removeClass('overflow-hidden');
+            });
+            $lateral_cart.removeClass('speed-in');
+        }
+
+
        evt.currentTarget.className ='current mainmenutoggle';
 
 
