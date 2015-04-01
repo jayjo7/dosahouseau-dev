@@ -82,12 +82,16 @@ Template.cart.helpers({
 
 Template.cart.events({
 
-   
-    'input #product_in_cart': function (event, template) {
+        'click #product_in_cart': function (event, template) {
         event.preventDefault();
-        console.log('In the Input Event handler');
+        console.log('In the click Event handler');
 
         console.log("currentTarget = " + event.currentTarget);
+        console.log("event.keyCode = " + event.keyCode);
+        //for(key in event)
+        //{
+        //    console.log(key + " = " + event[key]);
+        //}
 
             var selectedValue = Number (event.currentTarget.value);
             console.log(' New Selected Value = '+ selectedValue);
@@ -125,6 +129,114 @@ Template.cart.events({
                     event.currentTarget.value = this.qty;
                 }
             }
+  },
+
+
+  
+    'keypress #product_in_cart': function (event, template) {
+        //event.preventDefault();
+        var isIgnore = false;
+        console.log("In event.type= keypress");
+        console.log("currentTarget = " + event.currentTarget);
+        console.log("event.keyCode = " + event.keyCode);
+        console.log("event.which = " + event.which);
+        console.log("event.key = " + event.key);
+        console.log("event.currentTarget.value = " + event.currentTarget.value);
+
+        var currentTargetValue = event.currentTarget.value;
+        console.log("currentTargetValue = " + currentTargetValue);
+        console.log("currentTargetValue.length= " + currentTargetValue.length);
+
+
+        //for(key in event)
+        //{
+        //   console.log(key + " = " + event[key]);
+        //}  
+  
+
+        console.log("isIgnore - before = "+ isIgnore);
+
+        if(event.keyCode ==='8' || event.keyCode == 8)
+        {
+            if(currentTargetValue.length >1)
+            {
+
+                currentTargetValue = currentTargetValue.substring(0, (currentTargetValue.length - 1 ));
+                console.log("currentTargetValue after removing last char= " + currentTargetValue);
+
+            }
+            else
+            {
+
+                isIgnore = true;
+            }
+        }
+
+        console.log("isIgnore - after = "+ isIgnore);
+
+        if( ! isIgnore)
+        {
+
+            
+
+
+            var selectedValue;
+
+
+                console.log("in event.type= keypress");
+                if(isInteger(Number(event.key)))
+                {
+                    var enteredValue = currentTargetValue +event.key;
+                    console.log("enteredValue = " + enteredValue);
+                    selectedValue= Number (enteredValue);
+                }
+                else
+                {
+                    selectedValue = Number (currentTargetValue);
+                }
+
+            
+
+            console.log(' New Selected Value = '+ selectedValue);
+
+
+
+           product = this.product;
+            console.log("product = " + product );
+
+            sessid = Session.get('appUUID');
+            console.log("sessid = " + sessid );
+
+
+            if(selectedValue ===0)
+            {
+                if(confirm('Are you sure to remove the item !'))
+                {
+                    Meteor.call('addToCart', selectedValue ,product, sessid, this.Name, this.Category, this.Charge);
+
+                }
+                else
+                {
+                    event.preventDefault();
+                    console.log("this.qty = " + this.qty );
+                    event.currentTarget.value = this.qty;
+                }
+            }
+            else
+            {
+                if(isInteger(selectedValue))
+                {
+
+                    Meteor.call('addToCart', selectedValue ,product, sessid,  this.Name, this.Category, this.Charge);
+
+                }
+                else
+                {
+                    alert( 'Please enter a valid number.');
+                    event.currentTarget.value = this.qty;
+                }
+            }
+        }
   },
 
 
@@ -342,7 +454,7 @@ Template.cart.events({
 
 });
 
-    Template.body.events({
+ /*   Template.body.events({
         "click .cartProduct ": function(evt, data) {
 
         //var dataJson= JSON.stringify(data);
@@ -362,6 +474,8 @@ Template.cart.events({
             console.log("product_id = " + product_id );
 
             product = product_name.substring(product_name.indexOf("_")+1);
+            console.log("this.product = " + this.product );
+
             console.log("product = " + product );
 
             sessid = Session.get('appUUID');
@@ -404,4 +518,4 @@ Template.cart.events({
     // e -> jquery event
     // data -> Blaze data context of the DOM element triggering the event handler
   }
-});
+});*/
