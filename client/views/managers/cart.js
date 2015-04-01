@@ -133,10 +133,10 @@ Template.cart.events({
 
 
   
-    'keypress #product_in_cart': function (event, template) {
+    'keyup #product_in_cart': function (event, template) {
         //event.preventDefault();
         var isIgnore = false;
-        console.log("In event.type= keypress");
+        console.log("In event.type= keyup");
         console.log("currentTarget = " + event.currentTarget);
         console.log("event.keyCode = " + event.keyCode);
         console.log("event.which = " + event.which);
@@ -158,16 +158,14 @@ Template.cart.events({
 
         if(event.keyCode ==='8' || event.keyCode == 8)
         {
-            if(currentTargetValue.length >1)
+            if(currentTargetValue.length >0)
             {
 
-                currentTargetValue = currentTargetValue.substring(0, (currentTargetValue.length - 1 ));
                 console.log("currentTargetValue after removing last char= " + currentTargetValue);
 
             }
             else
             {
-
                 isIgnore = true;
             }
         }
@@ -180,22 +178,8 @@ Template.cart.events({
             
 
 
-            var selectedValue;
+            var selectedValue = Number (currentTargetValue);
 
-
-                console.log("in event.type= keypress");
-                if(isInteger(Number(event.key)))
-                {
-                    var enteredValue = currentTargetValue +event.key;
-                    console.log("enteredValue = " + enteredValue);
-                    selectedValue= Number (enteredValue);
-                }
-                else
-                {
-                    selectedValue = Number (currentTargetValue);
-                }
-
-            
 
             console.log(' New Selected Value = '+ selectedValue);
 
