@@ -68,14 +68,14 @@ Template.homePage.helpers({
 
         {
             Session.set('notification_message', notification_general)
-            return  false;
+            return  true;
 
         }
         else
         {
             Session.set('notification_message', null)
 
-            return true;
+            return false;
         }
 
     },
