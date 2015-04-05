@@ -131,6 +131,33 @@ Template.cart.events({
             }
   },
 
+    'keyup #intputPhoneNumber': function (event, template) {
+        console.log("In event.type (intputPhoneNumber)= keyup");
+
+        var countryCode = Settings.findOne({$and : [{Key: "country_code"}, {Value : {"$exists" : true, "$ne" : ""}}]})
+
+                    
+        phone = $('#intputPhoneNumber').val();
+
+        console.log("phone = " + phone);
+
+        console.log("CountryCode = " + countryCode['Value']);
+
+
+
+       //var formatedPhone = Phone.formatLocal(countryCode['Value'], phone);
+       // console.log("formatedPhone = " + formatedPhone);
+       //var formatE164Value = Phone.formatE164('AU', phone);
+      // console.log("formatE164Value = " + formatE164Value);
+
+               // var validPhoneNumber = Phone.isValidNumber(phone, 'US')
+               // console.log("validPhoneNumber = " + validPhoneNumber);
+        event.currentTarget.value= Phone.formatLocal(countryCode['Value'], phone);
+        
+       //$('#intputPhoneNumber').html(Phone.formatLocal('AU', phone));
+
+
+    },
 
   
     'keyup #product_in_cart': function (event, template) {
@@ -304,20 +331,20 @@ Template.cart.events({
             validationResult = false;
             
         }
-        else
-        if(!contactInfo.phoneNumber.match(/^[0-9]{1,10}$/))
-        {
+      //  else
+      //  if(!contactInfo.phoneNumber.match(/^[0-9]{1,10}$/))
+      //  {
+      //
+      //      console.log("Entered but contactInfo.phoneNumberis not valid" );
+      //      //event.target.setCustomValidity("Please enter your valid phone number.");
+      //      $intputPhoneNumber = $('#intputPhoneNumber')
+      //      $intputPhoneNumber .attr('style', 'border-color: red;')
+      //      $contactInfoError = $('#contactInfoError');
+      //      $contactInfoError.text('Please enter a valid phone number');  
+      //
+      //      validationResult = false;
 
-            console.log("Entered but contactInfo.phoneNumberis not valid" );
-            //event.target.setCustomValidity("Please enter your valid phone number.");
-            $intputPhoneNumber = $('#intputPhoneNumber')
-            $intputPhoneNumber .attr('style', 'border-color: red;')
-            $contactInfoError = $('#contactInfoError');
-            $contactInfoError.text('Please enter a valid phone number');  
-
-            validationResult = false;
-
-        }
+      //  }
         console.log("validationResult = " + validationResult);
         if(validationResult )
         {
