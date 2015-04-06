@@ -7,9 +7,10 @@
         <div class="pull-left col-xs-6" align="left"> {{address.Value}}
           <br>
           Phone: <a href="tel:{{phoneNumber.Value}}" class="phone">{{phoneNumber.Value}}</a> 
-          <br>
-          Fax: <a href="tel:{{faxNumber.Value}}" class="phone">{{faxNumber.Value}}</a> 
-
+          {{#if hasFaxNumber faxNumber.Value}}
+              <br>
+            Fax: <a href="tel:{{faxNumber.Value}}" class="phone">{{faxNumber.Value}}</a> 
+          {{/if}}
         </div>
         <div class="pull-right col-xs-6" align="right">
           <div class="head-social"> <a href="#"><i class="fa fa-twitter fa-2x"></i></a> <br>
