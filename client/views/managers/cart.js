@@ -82,7 +82,7 @@ Template.cart.helpers({
 
 Template.cart.events({
 
-        'click #product_in_cart': function (event, template) {
+        'click #product_in_cart , focusout  #product_in_cart': function (event, template) {
         event.preventDefault();
         console.log('In the click Event handler');
 
