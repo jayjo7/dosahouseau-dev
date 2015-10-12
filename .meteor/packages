@@ -4,16 +4,39 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-platform
+u2622:persistent-session
+gwendall:body-events
+momentjs:moment
+underscore
+sacha:spin
+iron:router
 meteorhacks:npm
 
 
-npm-container
-iron:router
-sacha:spin
 jquery
-underscore
-momentjs:moment
-gwendall:body-events
-u2622:persistent-session
-dispatch:phoneformat.js
+force-ssl
+matb33:collection-hooks
+jparker:crypto-base64
+base64
+underscorestring:underscore.string
+nimble:restivus
+okgrow:iron-router-autoscroll
+dandv:http-more
+gfk:mailgun-api
+
+
+npm-container
+standard-minifiers
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check
+dispatch:phoneformat.js@=1.5.1

@@ -2,24 +2,6 @@
 
 
 
-
-<!-- NAVIGATIONS END --> 
-<!-- Main Page START -->
-<main id="main">
-  <div id="masthead" style="background-image:url(img/FoodBand.jpg); background-position:center; background-size:cover; height:300px" >
-    <div class="container"  align="center">
-      <div class="row">
-        <div class="col-md-12" style="color:white;padding-top:70px">
-          <h1 id="page0" style="font-family: 'Rock Salt', sans-serif;text-shadow: 3px 2px 4px black;">Dosa House</h1>
-          <p class="lead"  style="font-family: 'Montserrat', sans-serif;text-shadow: 1px 2px 2px black;">Quick. Fast. Food</p>
-        </div>
-      </div>
-    </div>
-    <!--/container--> 
-    
-  </div>
-</main>
-
 {{# if haveNotification notification isNotTakingOnlineOrder isStoreClosed }}
 
           <!-- Notification Alerts -->
@@ -39,131 +21,83 @@
 
           <!-- End Notification Alerts -->
 {{/if}}
-<!-- Main Content --> 
-<!-- Main > Start Menus-->
-<div class="col-xs-12" id="menu">
-  <div class="row"  >
+<!-- menucard Grid Section -->
+<section id="menucard">
+  <div class="container flex-container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>MENU</h2>
+        <hr class="star-primary">
+        
+        <!--MenuCard--> 
 
-      {{#each categoryMenu}}
+    {{#each getSettingsMulti "category_menu"}}
 
         {{#if isMenuAvailable Value}}
+            <h3 align="center">{{ Value }}</h3>
+                <div class="cardd-container">
+            {{ #each menu Value}}
 
-                    <div align="left" style="padding-left:15px;">
-                      <p>&nbsp;</p>
-                      <p>
-                          <h1 > ♨ {{ Value }} ♨ </h1>
-                      </p>
+                <div class="cardd-singlecontainer {{soldOutCss fontLine fontStyle}}">
+                  <div class="cardd-img"> 
 
-            {{ #each menu Value }}
+                    {{#if isSpecial fontWeight}}
+                    <span class="cardd-banner"></span> 
+                    {{/if}}
 
-                      <div class="col-lg-6" id="{{UniqueId}}">
-                          <div class="the-menu-item {{soldOut fontLine}}">
-                            <div class="image-wrap thumbnail">
+                    <img src="{{imageFormatter}}{{ImageLink}}" alt=""> </div>
+                  <div class="proddbox">
+                    <div class="proddheader"><span title="{{Name}}" >{{{prune Name 24 false}}}</span></div>
+                    <div class="proddescription">{{Description}}</div>
+                    <div class="proddbutton">
+                     {{#if isToSell fontStyle}}  
 
-                              {{#if isDrink ../Value}}
+                       {{#if isItemAvailable fontLine}}  
 
-                                  <i style="color:grey" class="fa fa-coffee fa-2x"></i>
+                            {{#if isItemInCart UniqueId }}
 
-                              {{else}}
-                                  <i style="color:grey" class="fa fa-cutlery fa-2x"></i> 
+                                 {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
+                                       <button type="button" class="btn btn btn-sm pull-right  btn-ordered removecart" title="Remove from Cart" style="color:white;font-weight: bold;" ><span  id="removeCartSpan" class="glyphicon glyphicon-ok"></span> &nbsp; {{currency Price}} </button>
+                                    {{else}}
+                                    
+                                      <button class="btn btn btn-sm pull-right" title="Not taking Order"> &nbsp; {{currency Price}}</button>
+                                 {{/if}}  
+                            {{else}}     
 
+                                {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
+
+                                     <button class="btn btn-success btn-sm pull-right addcart" style="color:white;font-weight: bold;" title="Add to Cart"><span class="glyphicon glyphicon-shopping-cart" id="addCartSpan"></span> &nbsp; {{currency Price}}</button>
+                                  {{else}}   
+                                      <button class="btn btn btn-sm pull-right" title="Not taking Order"> &nbsp; {{currency Price}}</button>
+                                 {{/if}}       
                                {{/if}}   
 
-                           </div>
-                              <div class="the-menu-body">
-                                <h4 class="xsm">{{Name}}</h4>
-                                <p class="small">{{Description}}</p>
-                              </div>
-                      {{#if isItemAvailable fontLine}}  
 
-                            <div class="prices"> 
+                       {{else}}
+                       <span class="pull-right" style="font-size: 12px; font-weight: bold" >Sold Out &nbsp;{{currency Price}} </span>
 
-                                {{#if isItemInCart UniqueId }}
+                       {{/if}}
+                     {{else}}  
+                       <span class="pull-right" style="font-size: 12px; font-weight: bold" >{{currency Price}} </span>
 
-                                      {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
-                                          <button type="button" class="fa fa-check btn btn-success removecart " data-toggle="tooltip" data-placement="bottom" title='Remove from Cart'>
-                                          <span class="price xsm"> {{currency Charge}} </span>  
-                                        </button>
- 
-                                       
-                                      {{else}}
-                                          <button type="button" class="fa fa-check btn btn-inverse" data-toggle="tooltip" data-placement="bottom" title="Store Closed">
-                                          <span class="price xsm"> {{currency Charge}} </span> 
-                                           </button>
+                     {{/if}}
 
-                                        {{/if}}
+                    </div>
+                  </div>
+                </div>
 
 
-                                {{else}}
-
-                                      {{#if isTakingOnlineOrder isNotTakingOnlineOrder isStoreClosed}}
-                                        <button type="button" class="fa fa-shopping-cart  btn btn-default addcart" data-toggle="tooltip" data-placement="bottom" title="Add to Cart">
-
-                                        <span class="price xsm"> {{currency Charge}} </span>  
-                                      </button>
-
-
-                                      {{else}}
-
-                                      <button type="button" class="fa fa-shopping-cart  btn btn-btn-inverse" data-toggle="tooltip" data-placement="bottom" title="Store closed">
-
-                                        <span class="price xsm"> {{currency Charge}} </span>  
-                                      </button>
-
-
-                                      {{/if}}
-                                  {{/if}}
-                            </div>
-                      {{else}}
-
-                              <div class="prices"> <span class="price xsm">{{ currency Charge}}</span> </div>
-                              <div class="highlight">SOLD OUT</div>  
-                      
-                      {{/if}} 
-                          </div>
-                      </div>
-
-            {{/each}} 
-                      
-
-                      {{#if idOddNumberItems Value}}
-                          <div class="col-lg-6" id="dummy">
-                            <div class="the-menu-item ">
-                                <div>  </div>
-                                  <a  href="#">
-                                      <div class="the-menu-body">
-                                        <h4 class="xsm"></h4>
-                                        <p class="small"></p>
-                                      </div>
-                                  </a>
-                                  <div class="prices"> 
-                                
-
-                                  </div>
-                             </div>     
-                      </div>
-                      {{/if}}
-
-
-          </div>
-
-          {{/if}}
-
-        {{/each}}
-
+            {{/each}}
+                </div>  
+        {{/if}}
+    {{/each}}
+   
+        <!--//MenuCard--> 
+        
+      </div>
+    </div>
   </div>
-</div>
-
-
-
-<!-- Main > End Menus --> 
-<!-- Main Page END -->
-
-
-
-
-
-
+</section>
 
 
 </template>

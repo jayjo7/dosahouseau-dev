@@ -1,63 +1,37 @@
 <template name="confirmation">
+<nav class="navbar navbar-default" style="background-color: white ;border-top:solid 5px red; z-index: 0; min-height:70px;margin-bottom: 0px;" >
+  <div class="container"> 
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header page-scroll">
 
+      <a class="navbar-brand" href="{{pathFor 'home'}}"><span class=""><img src="/img/headerlogo.png" style=" position:absolute; top:4px; left:0px;" /></span></a></div>
+    
+    <!-- Collect the nav links, forms, and other content for toggling -->
+
+    <!-- /.navbar-collapse --> 
+  </div>
+  <!-- /.container-fluid --> 
+</nav>
 <table align="center" cellpadding="0" cellspacing="0" class="container-for-gmail-android" width="100%">
-
-  <tr>
-    <td align="left" valign="top" width="100%" >
-      <center>
-        <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#31353D" >
-          <tr>
-            <td width="100%" height="80" valign="top" style="text-align: center; vertical-align:middle;">
-            <!--[if gte mso 9]>
-            <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:80px; v-text-anchor:middle;">
-              <v:fill type="tile" src="http://s3.amazonaws.com/swu-filepicker/4E687TRe69Ld95IDWyEg_bg_top_02.jpg" color="#ffffff" />
-              <v:textbox inset="0,0,0,0">
-            <![endif]-->
-              <center>
-                <table cellpadding="0" cellspacing="0" width="100%" class="w320">
-                  <tr>
-                    <td class="pull-left mobile-header-padding-left" style="vertical-align: middle;   padding: 25px;">
-                     <a href="/"> <img height="30" src="/img/dosa-logo2.png" alt="Dosa Express Logo" /></a>
-                      
-                    </td>
-                    <td class="pull-right mobile-header-padding-right" style="color: #4d4d4d; padding: 25px;">
-
-                   <a id="conf-header-twitter" target="_blank" href="https://twitter.com/dosahouse"><img height="25" src="https://g.twimg.com/Twitter_logo_blue.png" alt="twitter" /></a>
-<!-- Social Buttons             
-<a href=""><img width="45" height="45" src="http://placehold.it/45x45" alt="facebook" /></a>
-                      <a href=""><img width="45" height="45" src="http://placehold.it/45x45" alt="rss" /></a>
-                      -->
-                    </td>
-                  </tr>
-                </table>
-              </center>
-              <!--[if gte mso 9]>
-              </v:textbox>
-            </v:rect>
-            <![endif]-->
-            </td>
-          </tr>
-        </table>
-      </center>
-    </td>
-  </tr>
-
-
-
+  {{#if isOrderStatusAlert UniqueId}}
+    <tr>
+        <td class='.danger'> {{getOrderStatusAlert UniqueId}}</td>
+    </tr>  
+  {{/if}}  
   <tr>
     <td align="center" valign="top" width="100%"  class="content-padding">
       <center>
         <table cellspacing="0" cellpadding="0" width="100%" class="w320">
           <tr>
-            <td class="header-lg"  style="font-family: 'Rock Salt';"> {{customerName UniqueId}} ,
+            <td class="header-lg"  style="font-family: 'Rock Salt';"> {{Order.CustomerName}} ,
 
-              {{#if isReady UniqueId}}
+              {{#if isReady Order}}
 
                 Your Order is Ready !
 
               {{else}}
 
-                {{#if isDelivered UniqueId}}
+                {{#if isDelivered Order}}
 
                 Your Order has been delivered !
 
@@ -75,7 +49,7 @@
           <tr>
             <td class="free-text">              
 
-              {{#each message UniqueId}}
+              {{#each message Order}}
 
                 {{this}} <br /><br />
 
@@ -88,47 +62,83 @@
               <table cellspacing="0" cellpadding="0" width="100%"  style="border-collapse:separate !important;">
                 <tr>
                   <td class="mini-block">
-                  <span class="header-sm highlight">Your Order # [ {{orderNumber UniqueId}} ]</span>
+                  <span class="header-sm highlight">Your Order # [ {{Order.OrderNumber }} ]</span>
                   <br />  <br /> 
                     <table cellpadding="0" cellspacing="0" width="100%" align="center">
                       <tr>
-                        <td class="progress-bar" align="center">
+                        <td  align="center">
                           <table cellpadding="0" align="center" cellspacing="0" width="100%">
                             <tr>
 
                               <!-- STEP ONE -->
                               <td class="step active">
-                                <img src="/img/1-on.png"  width='100' alt="Order Placed" /><br />
+                                <img src="/img/confirmation/1-on.png"  width='100' alt="Order Placed" /><br />
                                 <b>✓</b><br />Order Placed</td>
 
-                                {{#if isInKitchen UniqueId }}
+                                {{#if isInKitchen Order }}
 
                                        <!-- STEP TWO -->
                                       <td class="step active">
-                                        <img src="/img/2-on.png" alt="In Kitchen" /><br />
+                                        <img src="/img/confirmation/2-on.png" alt="In Kitchen" /><br />
                                 <b>✓</b><br />In Kitchen</td>
                                 {{else}}
 
                                <!-- STEP TWO -->
                                       <td class="step ">
-                                        <img src="/img/2-off.png" alt="In Kitchen" /><br />
+                                        {{#if omEnabled}}
+                                            <a href="#" id='moveOrderStatus'>
+                                              <img src="/img/confirmation/2-off.png" alt="In Kitchen" />
+                                            </a>
+                                        {{else}}
+                                             <img src="/img/confirmation/2-off.png" alt="In Kitchen" />
+                                        {{/if}}
+
+                                        <br />
                                 <b>&nbsp;</b><br />In Kitchen</td>
                                 {{/if}}
 
 
-                                {{#if isSaleComplete UniqueId}}
+                                {{#if isSaleComplete Order}}
 
                                       <td class="step active">
-                                      <img src="/img/3-on.png" alt="Ready for Pickup" /><br />
+                                      <img src="/img/confirmation/3-on.png" alt="Ready for Pickup" /><br />
                                 <b>✓</b><br />Ready for Pickup</td>
 
                                 {{else}}
                                      <!-- STEP THREE -->
                                     <td class="step">
-                                      <img src="/img/3-off.png" alt="Not Ready" /><br />
+                                      {{#if enableReadyButton Order omEnabled}}
+                                          <a href="#" id='moveOrderStatus'>
+                                            <img src="/img/confirmation/3-off.png" alt="Not Ready" /><br />
+                                          </a>  
+                                       {{else}}  
+                                          <img src="/img/confirmation/3-off.png" alt="Not Ready" /><br />
+                                      {{/if}}
+ 
                                 <b>&nbsp;</b><br />Ready for Pickup</td>
 
                                 {{/if}}
+
+                                {{#if isDelivered Order}}
+
+                                      <td class="step active">
+                                      <img src="/img/confirmation/4-on.png" alt="Order Delivered" /><br />
+                                <b>✓</b><br />Order Delivered</td>
+
+                                {{else}}
+                                     <!-- STEP THREE -->
+                                    <td class="step">
+                                      {{#if enableDeliveredButton Order omEnabled}}
+                                          <a href="#" id='moveOrderStatus'>
+                                            <img src="/img/confirmation/4-off.png" alt="Not Delivered" /><br />
+                                          </a>  
+                                       {{else}}  
+                                          <img src="/img/confirmation/4-off.png" alt="Not Delivered" /><br />
+                                      {{/if}}
+ 
+                                <b>&nbsp;</b><br />Order Delivered</td>
+
+                                {{/if}}                                
 
                             </tr>
                           </table>
@@ -156,11 +166,11 @@
                             <tr>
                               <td ><br /><span class="header-sm "  style="font-family: 'Rock Salt';">Pickup at</span> <br />
                                 <br />
-                                <span> <strong>DosaHouse</strong><br />
-                                    {{address.Value}}<br />
+                                <span> <strong>{{getSettings 'store_name'}}</strong><br />
+                                    {{getSettings 'address'}}<br />
                                       <br />
                               </span>
-                              Phone:&nbsp;<a href="tel:{{phoneNumber.Value}}" class="phone">{{phoneNumber.Value}}</a></td>
+                              Phone:&nbsp;<a href="tel:{{phoneNumber.Value}}" class="phone">{{getSettings 'phone_number'}}</a></td>
                             </tr>
                             
                           </table>
@@ -172,7 +182,7 @@
                               <w:anchorlock/>
                               <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Driving Directions</center>
                             </v:roundrect>
-                          <![endif]--><a href="https://www.google.com/maps/place/4%2F100-102+Pacific+Hwy,+Waitara+NSW+2077,+Australia"  target="_blank"  style="background-color:green;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">Driving Directions</a></div>
+                          <![endif]--><a href={{getSettings 'google_location_url'}}  target="_blank"  style="background-color:green;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">Driving Directions</a></div>
                         
 
                         </td>
@@ -216,7 +226,7 @@
                       <table cellspacing="0" cellpadding="0" width="100%">
                         <tr>
 
-                          <td class="product"><span style="color: #4d4d4d; font-weight:bold;">{{Name}}</span>  </td>
+                          <td class="product"><span style="color: #4d4d4d; font-weight:bold;text-transform: uppercase;">{{Name}}</span>  </td>
                         </tr>
                       </table>
                     </td>
@@ -224,7 +234,7 @@
                       {{qty}}
                     </td>
                     <td class="item-col" style="text-align: right">
-                      {{currency price}}
+                      {{currency totalPrice}}
                     </td>
                   </tr>
 
@@ -238,65 +248,63 @@
 
 
                   <tr>
-                     {{# if haveTax}}
 
-                             {{#if haveMessageToKitchen UniqueId}} 
+                          {{#if haveMessageToKitchen Order}} 
 
-                                <td class="item-col item" style="background-color: #ffffff; border-top: 1px solid #cccccc;">
+                                <td style="background-color: #ffffff; border-top: 1px solid #cccccc;">
                                 <div>
                                     <span style="color: #4d4d4d; font-weight:bold;">Message to Kitchen:</span> 
-                                        <br /><br/> {{messageToKitchen UniqueId}}
+                                        <br /><br/> {{messageToKitchen Order}}
                                     </div>
                                 </td>
                               {{else}}  
-                                <td class="item-col item">
+                                <td >
                                 </td>
 
-                                {{/if}}
+                          {{/if}}
 
-                                <td class="item-col quantity" style="text-align:right; padding-right: 10px; border-top: 1px solid #cccccc;">
-                                  <span class="total-space" >Subtotal</span> <br />
-                                  <span class="total-space">Tax</span> <br />
-                                  <!-- <span class="total-space">Delivery Fee</span> <br /> -->
-                                <span class="total-space" style="font-weight: bold; color: #4d4d4d">Total</span></td>
-                                <td class="item-col price" style="text-align: right; border-top: 1px solid #cccccc;"><span class="total-space">{{getSubTotal}}</span> <br />
-                                 
-                                    <span class="total-space">{{getTax}}</span> <br />
-                                  
-                                  <!--<span class="total-space">$0.00</span> <br /> -->
-                                <span class="total-space" style="font-weight:bold; color: #4d4d4d">{{getTotal}}</span>
+                              <td  style="text-align:right; padding-right: 10px; border-top: 1px solid #cccccc;">
 
+                                  {{#if showSubTotal UniqueId}}
+                                    <span class="total-space" >Subtotal</span> <br />
+                                  {{/if}}
+                                  {{#if haveTax UniqueId}}
+                                    <span class="total-space">Tax</span> <br />
+                                  {{/if}}
+                                  {{#if haveDiscount UniqueId}}
+                                      <span class="total-space">Discount</span> <br />
+                                  {{/if}}
+                                  <span class="total-space" style="font-weight: bold; color: #4d4d4d">Total</span>
+                              </td>
+
+
+                                <td  style="text-align: right; border-top: 1px solid #cccccc;">
+                                  {{#if showSubTotal UniqueId}}
+                                    <span class="total-space">{{getSubTotal UniqueId}}</span> <br />
+                                  {{/if}}
+                                  {{#if haveTax UniqueId}}
+                                    <span class="total-space">{{getTax UniqueId }}</span> <br />
+                                  {{/if}}
+                                 {{#if haveDiscount UniqueId}}
+                                  <span class="total-space">({{getDiscount UniqueId }})</span> <br /> 
+                                  {{/if}}
+                                <span class="total-space" style="font-weight:bold; color: #4d4d4d">{{getTotal UniqueId}}</span>
                             </td>
 
-                       {{else}}   
-
-                             {{#if haveMessageToKitchen UniqueId}} 
-
-                              <td class="item-col item" style="background-color: #ffffff; border-top: 1px solid #cccccc;">
-                                <div>
-                                    <span style="color: #4d4d4d; font-weight:bold;">Message to Kitchen:</span> 
-                                        <br /><br/> {{messageToKitchen UniqueId}}
-                                    </div>
-                                </td>
-                              {{else}}  
-
-                                <td class="item-col item">
-                                </td>
-
-                                {{/if}}
-
-                                <td class="item-col quantity" style="text-align:right; padding-right: 10px; border-top: 1px solid #cccccc;">
-                                  <!-- <span class="total-space">Delivery Fee</span> <br /> -->
-                                <span class="total-space" style="font-weight: bold; color: #4d4d4d">Total</span></td>
-                                <td class="item-col price" style="text-align: right; border-top: 1px solid #cccccc;">
-                                  
-                                  <!--<span class="total-space">$0.00</span> <br /> -->
-                                <span class="total-space" style="text-align: right; font-weight:bold; color: #4d4d4d">{{getTotal}}</span>
-
-                            </td>                       
-
-                      {{/if}}      
                   </tr>  
+                  <tr>
+                            <td>
+                            </td>
+
+                            <td style="text-align: right;">
+                              <span style="color: #4d4d4d; font-weight:bold;">Payment:</span>
+                            </td>
+
+                            <td style="text-align: right;">
+                              <span style="color: #4d4d4d; font-weight:bold;">{{getPaymentOption UniqueId}}</span>
+
+                            </td>
+                  </tr>
                 </table>
               </td>
             </tr>
