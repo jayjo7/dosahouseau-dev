@@ -3,6 +3,36 @@ var notificationkey = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY)
 
 Template.homePage.helpers({
 
+        idOddNumberItems: function(categoryMenu)
+    {
+                var menuCount = Menu.find({$and : [{Category: categoryMenu}, {Name : {"$exists" : true, "$ne" : ""}}]}).count();
+                console.log("menuCount = " + menuCount);
+                if(menuCount === 1)
+                {
+                    return true;
+                }
+                else if(menuCount > 1)
+                {
+                    console.log("menuCount %2 = " + menuCount % 2 );
+                    if(menuCount %2 === 1)
+                        return true;
+                    else
+                        return false;
+                }
+
+    },
+
+        isDrink:function(categoryMenu)
+    {
+        //console.log('isDrink:categoryMenu = ' +categoryMenu);
+        if('Drinks' === categoryMenu)
+            return true;
+        else
+            return false;
+
+
+    },
+
     getPriceString:function(menu)
     {
         if(menu.Price)
