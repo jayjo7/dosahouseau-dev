@@ -311,7 +311,6 @@ Template.homePage.helpers({
 Template.homePage.events({
     'click .addcart': function(evt,tmpl)
     {
-
         var orgname         = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
         var currentTarget   = evt.currentTarget
         var product         = this.UniqueId ;

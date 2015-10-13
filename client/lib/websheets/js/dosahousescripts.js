@@ -5,17 +5,14 @@ function openWindow(url, windowName, percent) {
         h = window.screen.availHeight * percent / 100;
     }
 
-    var width = 'width=' + w;
-    var height= 'heoght ='+h;
-    var fullscreen= 'fullscreen="no"'
-    var location = 'location="no';
-    var menubar= 'menubar="no"'
-    var toolbar= 'toolbar="no"';
+    var width       = 'width=' + w;
+    var height      = 'height ='+h;
+    var fullscreen  = 'fullscreen="no"';
+    var location    = 'location="no';
+    var menubar     = 'menubar="no"';
+    var toolbar     = 'toolbar="no"';
 
 
     window.open(url,windowName, width + ' '+ height + ' '+ fullscreen + ' '+ location + ' ' + menubar +' ' + toolbar, false);
 }
 
-    isInteger = function (x) {
-        return (typeof x === 'number') && (x % 1 === 0);
-    };
