@@ -152,7 +152,7 @@
 	width: 3em;
 	font-weight: 500;
 	border: 0px solid;
-	box-shadow: -1px -1px 2px 1px rgba(200,0,3,1.00);
+	box-shadow: -1px -1px 2px 1px rgba(0,128,0,1.00);
 	text-align: center;
 }
 .qtyy-modal:focus, .textfld-modal:focus {
@@ -166,7 +166,7 @@
 	font-weight: 500;
 	border: 0px solid;
 	padding: 2px;
-	box-shadow: -1px -1px 2px 1px rgba(200,0,3,1.00);
+	box-shadow: -1px -1px 2px 1px rgba(0,128,0,1.00);
 }
 .bgm-modal {
 	background-color: rgba(238,238,238,0.20);
