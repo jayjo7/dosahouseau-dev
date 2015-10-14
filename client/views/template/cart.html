@@ -7,60 +7,144 @@
 <form id="contactInfoForm">
       <p>&nbsp; </p>
       <h2 class="xsm text-uppercase text-center"  style="font-family: 'Rock Salt'; padding-top    : 30px">TOGO Order</h2>
-      <ul class="minicart-list">
+      {{# if isItemInCart}}
 
-        {{#each shopCart}}
-        <li>
-          <div class="col-xs-12"  align="left"> {{Name}}</div>
-         <!-- <div><input  class="col-xs-1 text-warning prodqty_{{product}}" size="2" maxlength="2" value={{qty}}/></div>-->
 
-          <div class="col-xs-12">
+  <div class="checkout-modal-itemlist" align="center">
 
-            <input type="number" maxlength="2" class="text-warning cartProduct" size="2" min="0"  step="1" id="product_in_cart" name="product_{{product}}" value="{{qty}}">
+      <table  class="table    table-responsive">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
 
-           <span class="amount pull-right" >{{currency price}} </span>
-        </div>
-        </li>  
-        <br><hr style=" border-top: 1px dotted grey;" width="90%">
-        {{else}}
+         {{#each shopCart}} 
+          <tr>
+            <td style="color:#333;text-align:left;text-transform: uppercase">{{Name}}</td>
+            <td style="color:#333;text-align:left">
+              <input name="product_{{product}}" value="{{qty}}" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="qtyy-modal" id="product_in_cart"  size="2" maxlength="2" border="0">
+            </td>
+            <td style="color:#333;text-align:left">{{currency totalPrice}}</td>
+            <td style="text-align:left; color:#333;" ><button class="checkout__action removecart" ><i class="icon small glyphicon glyphicon-trash"></i></button></td>
+          </tr>
+        {{/each}}
+        <tr></tr>
+          <tr>
+            <td style="color:#333" colspan="2"> {{shopCart.message}} </td>
+            <td style="color:#333" > {{currency shopCart.total}} </td>
+            <td> </td>
+          </tr>
+        </tbody>
+      </table>
+    
+    
+  </div>
+
+  <div class="checkout-modal-container-orderdata" align="center">
+    <div class="checkout-modal-customerdetails">
+      <table  class="table-condensed" width="100%" border="0" align="right" cellpadding="2" cellspacing="2">
+
+    <tr>
+      <td style="text-align:right; padding:8px; color:#333; " >Name </td>
+      <td style="text-align:left"><input type="text" class="box textfld-modal" id="inputContactName"  maxlength="25" name="contactName" style="text-align:left" required>&nbsp;<sub style="color:#333;">*</sub></td>
+    </tr>
+    <tr>
+      <td style="text-align:right; padding:8px; color:#333; " >Mobile </td>
+       <td style="text-align:left"><input  type="tel" class="box textfld-modal" id="inputPhoneNumber" name="phoneNumber"  maxlength="15" style="text-align:left" required >&nbsp;<sub style="color:#333">*</sub></td>
+    </tr>
+    <tr>
+      <td style="text-align:right; padding:8px; color:#333; "> Email </td>
+      <td style="text-align:left"><input type="email" class="box textfld-modal" id="inputEmail" name="email"  maxlength="60" style="text-align:left" required>&nbsp;<sub style="color:#333">*</sub></td>
+    </tr>
+    <tr>
+      <td style="text-align:right; padding:8px; color:#333; ">Notes</td>
+      <td style="text-align:left"> <input type="text" class="box textfld-modal" id="inputMessageToKitchen"  maxlength="44" name="messageToKitchen"  placeholder="Special Instruction" style="text-align:left" wrap="hard"></td>
+    </tr>
+      </table>
+    </div>
+    <div class="checkout-modal-paymentdetails">
+      <table  class="table-condensed" width="100%" border="0" align="left" cellpadding="2" cellspacing="2">
+        <tr>
+          <td width="7"><input  type="radio" name="paymentOption" value="onPickup"  id="inputRadioPickUp" checked></td>
+          <td style="color:#333;text-align:left;" nowrap>&nbsp;Pay On Pickup</td>
+        </tr>
+
+        {{#if isPaymentEnabled}}
+          <tr>
+            <td ><input type="radio" name="paymentOption"  value="now" id="inputRadioNow" ></td>
+            <td  style="color:#333; text-align:left;" nowrap>&nbsp;Pay Now</td>
+          </tr>
+        {{/if}}  
+        
+      </table>
+    </div>
+    <!--Credit Card Details-->
+    <div id="creditcarddetails" class="creditcarddetails" style="background-color: rgba(0,128,0,0.20);display:none;">
+      <table  class="table-condensed" border="0" align="right" cellpadding="2" cellspacing="2" >
+        <tr  class="">
+          <td colspan="2"><span class="small active" style="color:#333;">Your Credit Card is securely handled by our Payment Processor.</span></td>
+        </tr>
+        <tr >
+            <td style="text-align:right; padding:8px; color:#333; " nowrap>Card Number</td>
+            <td style="text-align:left">
+                <input type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="box textfld-modal cclock-modal" id="inputCardNumber" name="cardNumber"  maxlength="16" size="20" style="text-align:left" required>&nbsp;<sub style="color:#333">*</sub>
+            </td>
+        </tr>
+        <tr >
+            <td style="text-align:right; padding:8px; color:#333;">Expiration</td>
+            <td style="text-align:left">
+              <input type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="box textfld-modal" id="inputCardExpiryMonth" name="cardExpiryMonth"  maxlength="2" size="5" placeholder= "MM" style="text-align:left" required>
+              <input type="tel"  onClick="this.setSelectionRange(0, this.value.length)" class="box textfld-modal" id="inputCardExpiryYear" name="cardExpiryYear"  maxlength="4" size="5" placeholder= "YYYY" style="text-align:left" required>&nbsp;<sub style="color:#333">*</sub>
+           </td>       
+        </tr>
+  
+        <tr >
+            <td style="text-align:right; padding:8px; color:#333;" >CVC</td>
+            <td style="text-align:left"><input type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="box textfld-modal" id="inputCVC" name="cardCVC"  maxlength="4" size="5" style="text-align:left" required>&nbsp;<sub style="color:#333">*</sub></td>
+        </tr>              
+
+
+      </table>
+    </div>
+  </div>
+  <div>
+    <table>
+      <tr>
+        <td>
+        <span id='contactInfoError' style="color:red;" align='right'></span>
+      </td>
+    </tr>
+    </table>
+  </div>
+<br>
+    <div align="center" >
+    <button class="bttn-modal" id="placeOrder">Place Order</button>
+    <button class="bttn-modal" id="checkout-modal-close-trigger">Close</button><br/>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+       {{else}}
 
         <li> 
           <div class="col-xs-10 minicart-total"> <span>No Items in the cart, please add from the menu.</span></div>
         </li>
-        {{/each}}
-      </ul>
-      <br><br>
-
-    {{#if shopCart.itemCount }}
-
-
-      <div class="minicart-total" style="background-color:lightyellow;">Total ({{shopCart.taxMessage}}) <span class="amount pull-right" >{{currency shopCart.total}}</span> </div>
-
-      
-
-   
-        <div class="minicart-total"> Your Contact Information:<br>
-          <br>
-          <p>
-              <input class="text-warning" id="contactName" name="contactName" placeholder="Name"   required >&nbsp;<sub>*</sub>
-              <br>
-              <br>
-              <input type="email" class="text-warning" id="inputEmail" name="email" placeholder="Email" required >&nbsp;<sub>*</sub>
-              <br>
-              <br>
-              <input type="tel" class="text-warning" id="intputPhoneNumber" name="phoneNumber"  placeholder="Phone - Numbers only" required >&nbsp;<sub>*</sub>
-              <br>
-              <br>
-              <input  type="textarea" maxlength="50" class="text-warning" id="messageToKitchen"  rows="2" name="messageToKitchen"  wrap="hard" placeholder="Message To Kitchen">
-            </p>
-        </div>
-        <span id='contactInfoError' style="color:red" align='center'></span>
-        <br>
-        <br>
-        <button type="submit" class="btn btn btn-success checkout-btn placeOrder">Place Order</button>
-
 
       {{/if}}
+
       </form>
     </div>  
   </div>

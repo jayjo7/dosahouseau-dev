@@ -1,7 +1,7 @@
 <template name="header">
 
 <header class="shadow" >
-  <div id="logo"><a href="#"><img  src="img/headerlogo.png" width="100" alt="Homepage" ></a></div>
+  <div id="logo"><a href="{{pathFor 'home'}}"><img  src="/img/headerlogo.png" width="100" alt="Homepage" ></a></div>
   <div id="cd-hamburger-menu"><a class="cd-img-replace hamburgerMenu" href="#0">Menu</a></div>
 
   {{# if isItemInCart}}
@@ -23,7 +23,7 @@
     <li> <a id="main-menutoggle"    href="#menu"    class="mainmenutoggle">Our Menu</a> </li>
     <li> <a id="aboutus-menutoggle" href="#aboutUs" class="mainmenutoggle">About Us</a></li>
     <li > <a id="catering-menutoggle"   href="#catering"  class="mainmenutoggle">Catering</a> </li>
-    <li> <a id="findus-menutoggle" href="https://www.google.com/maps/place/4%2F100-102+Pacific+Hwy,+Waitara+NSW+2077,+Australia"  target="_blank" class="mainmenutoggle">Find Us</a></li>
+    <li> <a id="findus-menutoggle" href={{getSettings 'google_location_url'}}  target="_blank" class="mainmenutoggle">Find Us</a></li>
 
   </ul>
 </nav>

@@ -1,3 +1,31 @@
+Template.registerHelper('isItemInCart', function(faxNumber)
+{
+        var sessid = Session.get('appUUID');
+
+
+        var cartItems = CartItems.find({session: sessid});
+        var cartItemsCount = cartItems.count()
+        console.log("header.js: cartItems.count = " + cartItemsCount);
+
+        console.log("header.js: cartItems = " + cartItems)
+            if(cartItemsCount > 0)
+            {
+            	   var $L = 1200,
+        		   $main_menutoggle    = $('#dosahousecart');
+        		   $main_menutoggle.removeClass('wiggle-me');
+
+                 return true;
+
+             }
+            else
+            {
+            	return false;
+        	}
+    
+
+});
+
+
 Template.registerHelper('hasFaxNumber', function(faxNumber)
 {
 		if(faxNumber==undefined || faxNumber == null )
