@@ -4,9 +4,8 @@
 <div id="cd-cart">
   <div class="minicart-wrap">
     <div class="minicart-body cart-toggle">
-<form id="contactInfoForm">
-      <p>&nbsp; </p>
-      <h2 class="xsm text-uppercase text-center"  style="font-family: 'Rock Salt'; padding-top    : 30px">TOGO Order</h2>
+      <br>
+      <h2 class="xsm text-uppercase text-center"  style="font-family: 'Rock Salt'; padding-top:30px">TOGO Order</h2>
       {{# if isItemInCart}}
 
 
@@ -14,7 +13,7 @@
 
       <table  class="table    table-responsive">
         <thead>
-          <tr>
+          <tr style="">
             <th>Item</th>
             <th>Qty</th>
             <th>Price</th>
@@ -25,7 +24,7 @@
 
          {{#each shopCart}} 
           <tr>
-            <td style="color:#333;text-align:left;text-transform: uppercase">{{Name}}</td>
+            <td style="color:#333;text-align:left;text-transform:uppercase;font-size:0.8em">{{Name}}</td>
             <td style="color:#333;text-align:left">
               <input name="product_{{product}}" value="{{qty}}" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="qtyy-modal" id="product_in_cart"  size="2" maxlength="2" border="0">
             </td>
@@ -122,24 +121,17 @@
   </div>
 
 
-
-
-
-
-
-
-
-
-
        {{else}}
 
         <li> 
-          <div class="col-xs-10 minicart-total"> <span>No Items in the cart, please add from the menu.</span></div>
+          <div class="col-xs-10 minicart-total" style="font-family: 'Rock Salt';"> <span>No Items in the cart, please add from the menu.</span></div>
+              <div align="center" >
+                  <button class="bttn-modal" id="checkout-modal-close-trigger">Close</button><br/>
+              </div>
         </li>
 
       {{/if}}
 
-      </form>
     </div>  
   </div>
 </div>
