@@ -5,7 +5,7 @@ jQuery(document).ready(function($){
 		$cart_trigger = $('#cd-cart-trigger'),
 		$hamburger_icon = $('#cd-hamburger-menu'),
 		$lateral_cart = $('#cd-cart'),
-		$shadow_layer = $('#cd-shadow-layer'),
+		$shadow_layer = $('#cd-shadow-layer');
 
 	//open lateral menu on mobile
 	$hamburger_icon.on('click', function(event){
