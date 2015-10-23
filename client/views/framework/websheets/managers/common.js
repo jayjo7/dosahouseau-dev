@@ -352,17 +352,7 @@ Template.registerHelper('isPaymentEnabled', function(){
 
 	    var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
 
-	    console.log('Meteor.settings.public[orgname].onlinePayment = ' + Meteor.settings.public[orgname].onlinePayment);
-
-	    if('enabled' === Meteor.settings.public[orgname].onlinePayment)
-	    {
-	    	return true;
-	    }
-	    else
-	    {
-	    	false;
-	    }
-
+	    return checkEnabled(Meteor.settings.public[orgname].onlinePayment.toUpperCase());
 
 });
 
@@ -372,6 +362,22 @@ Template.registerHelper('imageFormatter', function(){
 
 	return Meteor.settings.public[orgname].imageFormatter;
 
+});
+
+Template.registerHelper('isOSMEnabled', function(){
+
+	var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+
+	return checkEnabled(Meteor.settings.public[orgname].osm.toUpperCase());
+
+});
+
+
+Template.registerHelper('isStateEnabled', function(stateLevel){
+
+	var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+
+	return checkStateEnabled(orgname,stateLevel);
 });
 
 
@@ -498,6 +504,48 @@ getDmCountPage = function()
 	var key = websheets.public.generic.DM_COUNT_PAGE
 	var result = Content.findOne({$and : [{Key: key}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]});
 	return result.Value
+
+
+}
+
+checkStateEnabled = function (orgname, stateLevel)
+{
+	var stateFromSettings;
+
+	stateLevel = Number(stateLevel);
+
+	switch (stateLevel)
+	{
+		case websheets.public.orderStateCode.ONE:
+			stateFromSettings = Meteor.settings.public[orgname].os.state_1.toUpperCase();
+			break;
+
+		case websheets.public.orderStateCode.TWO:
+			stateFromSettings = Meteor.settings.public[orgname].os.state_2.toUpperCase();
+			break;
+		case websheets.public.orderStateCode.THREE:
+			stateFromSettings = Meteor.settings.public[orgname].os.state_3.toUpperCase();
+			break;
+		case websheets.public.orderStateCode.FOUR:
+			stateFromSettings = Meteor.settings.public[orgname].os.state_4.toUpperCase();
+			break;
+
+
+	}
+
+	return checkEnabled(stateFromSettings);
+}
+
+checkEnabled = function (whatToCheck)
+{
+	if('ENABLED' === whatToCheck.toUpperCase())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 
 
 }
