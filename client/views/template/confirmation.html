@@ -85,7 +85,7 @@
 
                                    <!-- STEP TWO -->
                                           <td class="step ">
-                                            {{#if isOSMEnabled}}
+                                            {{#if omEnabled}}
                                                 <a href="#" id='moveOrderStatus'>
                                                   <img src="/img/confirmation/2-off.png" alt="In Kitchen" />
                                                 </a>
@@ -109,7 +109,7 @@
                                     {{else}}
                                          <!-- STEP THREE -->
                                         <td class="step">
-                                          {{#if enableReadyButton Order isOSMEnabled}}
+                                          {{#if enableReadyButton Order omEnabled}}
                                               <a href="#" id='moveOrderStatus'>
                                                 <img src="/img/confirmation/3-off.png" alt="Not Ready" /><br />
                                               </a>  
@@ -133,7 +133,7 @@
                                     {{else}}
                                          <!-- STEP THREE -->
                                         <td class="step">
-                                          {{#if enableDeliveredButton Order isOSMEnabled}}
+                                          {{#if enableDeliveredButton Order omEnabled}}
                                               <a href="#" id='moveOrderStatus'>
                                                 <img src="/img/confirmation/4-off.png" alt="Not Delivered" /><br />
                                               </a>  
