@@ -61,6 +61,7 @@
 	justify-content: center;
 	-webkit-flex-direction: row;
 	flex-direction: row;
+	background-color:rgba(0,128,0,.20);
 	
 }
 .checkout-modal-itemlist {
