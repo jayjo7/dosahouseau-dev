@@ -70,3 +70,13 @@ sup {
     vertical-align: super;
     font-size: smaller;
 }
+
+#submitButtons {
+  margin-top: 15px;
+}
+
+#errorAlert {
+  margin-top: 15px;
+   display:none;
+ 
+}

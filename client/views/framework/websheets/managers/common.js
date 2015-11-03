@@ -380,6 +380,12 @@ Template.registerHelper('isStateEnabled', function(stateLevel){
 	return checkStateEnabled(orgname,stateLevel);
 });
 
+Template.registerHelper('formNotFilledMessage', function(stateLevel){
+
+
+	return websheets.public.generic.FORM_NOT_FILLED_MESSAGE;
+});
+
 
 validData = function(input)
 {

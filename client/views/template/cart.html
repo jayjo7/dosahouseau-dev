@@ -112,12 +112,15 @@
     </div>
   </div>
 
-        <p id='contactInfoError' style="color:red;" align='center'></p>
+          <div class="alert alert-danger alert-block fade in" id="errorAlert">
 
-<br>
-    <div align="center" >
-    <button type="submit" class="bttn-modal" id="placeOrder">Place Order</button>
-    <button class="bttn-modal" id="checkout-modal-close-trigger">Close</button><br/>
+            <p>{{formNotFilledMessage}}</p>
+
+          </div>
+
+    <div align="center" id="submitButtons">
+      <button   class="bttn-modal"  id="placeOrder"  type="submit"  >Place Order</button>
+      <button   class="bttn-modal"  id="checkout-modal-close-trigger" >Close</button><br/>
   </div>
 
 
