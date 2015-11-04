@@ -80,3 +80,23 @@ sup {
    display:none;
  
 }
+
+   footer{
+      background: #333;
+      
+      font-size:14px;
+      color: #eee;
+   
+      padding: 20px;
+
+
+
+   }
+
+   .col-xs-12#footerCol{
+      padding-right: 0;
+      padding-left: 0;
+
+   }
+
+
