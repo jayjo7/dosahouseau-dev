@@ -74,11 +74,6 @@ Meteor.publish('ordersMeta', function(UniqueId,orgname)
 
 Meteor.publish('workhours', function(orgname)
 {
-    console.log("workhours : orgname = " + orgname);
-    var workHourse = WorkHours.find({orgname:orgname}).fetch();
-    console.log("workhours : workHourse.length= " + workHourse.length);
-
-
 	return WorkHours.find({orgname:orgname});
 
 });
