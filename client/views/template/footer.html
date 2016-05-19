@@ -1,19 +1,43 @@
- <template name="footer">
-<div class="col-xs-12" id="footerCol">
-  <footer id="footer" class="footer">
-      <div class="row"   id="address" style="padding:15px;"> 
-        <div class="pull-left col-xs-6" align="left"> {{getSettings 'address'}}
-          <br>
-          Phone: <a href="tel:{{phoneNumber.Value}}" class="phone">{{getSettings 'phone_number'}}</a> 
-        </div>
-        <div class="pull-right col-xs-6" align="right">
-          <div class="head-social"> <a target="_blank" href="{{getSettings 'twitter_url'}}"><i class="fa fa-twitter fa-2x"></i></a> <br>
-            <a id="footer-twitter" target="_blank" href="{{getSettings 'twitter_url'}}" >@dosaexpress</a> </div>
+<template name="footer">
+  <div class="col-xs-12" id="footerCol">
+    <footer class="text-center" id="callus">
+      <div class="footer-above">
+        <div class="container">
+          <div class="row">
+            <div class="footer-col col-md-4">
+              <h3>Hours</h3>
+              <div>
+                <p>SUN&nbsp;:{{getHours 'Sunday'}}</p>
+                <p>MON&nbsp;:{{getHours 'Monday'}}</p>
+                <p>TUE&nbsp;:{{getHours 'Tuesday'}}</p>
+                <p>WED&nbsp;:{{getHours 'Wednesday'}}</p>
+                <p>THU&nbsp;:{{getHours 'Thursday'}}</p>
+                <p>FRI&nbsp;:{{getHours 'Friday'}}</p>
+                <p>SAT&nbsp;:{{getHours 'Saturday'}}</p>
+              </div>
+            </div>
+             <div class="footer-col col-md-4">
+              <h3>Connect</h3>
+              <ul class="list-inline">
+                <li> <a href="{{getSettings 'facebook_url' }}" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-facebook"></i></a> </li>
+                <li> <a href="{{getSettings 'twitter_url' }}" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-twitter"></i></a> </li>
+              </ul>
+            </div>  
+            <div class="footer-col col-md-4">
+              <h3>Location</h3>
+              <p><a  href="{{getSettings 'google_location_url'}}"  target="_blank" style="color:white">{{getSettings 'address'}}</a></p>
+              <p> Phone: <a href="tel:{{phoneNumber.Value}}" class="phone">{{getSettings 'phone_number'}}</a> </p>
+          </div>
+          </div>
         </div>
       </div>
-        <div class="copyright col-xs-12 text-center">Powered by <a href='http://websheets.io'>Websheets&#8482;</a> </div>
-        <div class="copyright col-xs-12 text-center">&nbsp;</div>
-
-  </footer>
-</div>
+      <div class="footer-below">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">Powered by <a href='http://websheets.io'>Websheets&#8482;</a></div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
 </template>

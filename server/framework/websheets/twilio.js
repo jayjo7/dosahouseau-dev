@@ -28,9 +28,23 @@ Meteor.methods({
           default:
             
                 CLIENT_NAME           = Meteor.call('getSetting','store_name', order.orgname);
-                console.log(order.sessionId + ': smsOrderReceived: CLIENT_NAME = ' +CLIENT_NAME); 
+                var WILL_BE_READY_IN      = Meteor.call('getSetting','will_be_ready_in' , order.orgname);
+
+                console.log(order.sessionId + ': smsOrderReceived : CLIENT_NAME = ' +CLIENT_NAME); 
+                console.log(order.sessionId +" : smsOrderReceived : whoReceiving     = " + whoReceiving);
+                console.log(order.sessionId +" : smsOrderReceived : WILL_BE_READY_IN = " + WILL_BE_READY_IN);
                 
-                body      = 'Received Order[' + order.OrderNumber + '] \n';
+                body      = 'Received Order[' + order.OrderNumber + ']';
+
+              if(WILL_BE_READY_IN)
+              {
+                 body = body + " will be ready in " + WILL_BE_READY_IN + " minutes \n";
+              }
+              else
+              {
+                body = body + " \n";
+              }
+
                 body     += order.Items + '\n';
                 body     += ' - ' + CLIENT_NAME + ' \n' ;
                 body     +=   rootUrl(order.orgname) +'/os/'+ order.UniqueId;

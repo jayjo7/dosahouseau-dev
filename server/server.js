@@ -68,9 +68,9 @@ Meteor.methods({
 
 					cartItem.totalPrice = cartItem.Price * cartItem.qty;
 
-					console.log(cartItem.session+ ': addToCart:totalPrice = ' + cartItem.totalPrice);
+					console.log(cartItem.session + ': addToCart: totalPrice = ' + cartItem.totalPrice);
 
-					console.log(cartItem.session + ': cartId = '+ cartItem.cartId);
+					console.log(cartItem.session + ': addToCart: cartId = '+ cartItem.cartId);
 
 					CartItems.update({_id:cartItem.cartId, product:cartItem.product, session:cartItem.session}, cartItem ,{upsert:true});
 
@@ -185,7 +185,7 @@ Meteor.methods({
 	},
 
 
-	orderItems: function(sessionId, contactInfo, sequence, orgname, cardToken, callback)
+	orderItems: function(sessionId, contactInfo, sequence, orgname, bagOfGoodies, callback)
 	{
 
 			console.log(sessionId + ' :In OrderItems');
@@ -249,13 +249,19 @@ Meteor.methods({
 
 				itemString += '\n';
 
+				var totalItemPrice = cartitems.qty *  cartitems.Price;
+
    				items.push(
    				{ 
         				"name" 						: cartitems.Name,
         				"qty"  						: cartitems.qty,
 						"itemSize"					: cartitems.itemSize,  			
         				"spiceLevel" 				: cartitems.spiceLevel,
-						"messageToKitchenByItem" 	: cartitems.messageToKitchenByItem
+						"messageToKitchenByItem" 	: cartitems.messageToKitchenByItem,
+						"price"						: cartitems.Price,
+						"itemCode"                  : cartitems.ItemCode,
+						"totalItemPrice"			: totalItemPrice
+
 				});
 
 				cartitems.UniqueId = order.UniqueId;
@@ -326,17 +332,32 @@ Meteor.methods({
             }
 
 
-			if(cardToken)
+			if(bagOfGoodies.cardToken)
 			{
 				order.Payment='Online';
 				order.cardToken = cardToken;
             }
-            else
+            else if(bagOfGoodies.Payment)	
+            {
+            	order.Payment = bagOfGoodies.Payment;
+            }
+           	else 	
             {
 
-            	order.Payment='At Pickup';
+            	order.Payment = 'At Pickup';
 
             }	
+
+            if(bagOfGoodies.Delivery)
+            {
+            	order.Delivery = bagOfGoodies.Delivery;
+            }
+            else
+            {
+            	order.Delivery ="Carry Out";
+            }
+
+            
 
             console.log(sessionId + " : Here is the completed Order Object: " + JSON.stringify(order, null, 4));
 
@@ -457,8 +478,10 @@ OrdersMeta.after.insert(function (userId, doc) {
   	var processStatus	= 	{
   								'payment'	:{},
   						   		'websheets'	:{},
+   						   		'printer'	:{}, 						   		
   						   		'email'		:{},
   						   		'sms'		:{}
+
 
   							};
 
@@ -534,14 +557,16 @@ OrdersMeta.after.insert(function (userId, doc) {
  	//End CC Auth and Charge
 
 
-    //Start Sending the Websheets
+    //Start Sending to the Websheets 
 	try{
+			console.log(doc.sessionId + ": Posting to sheets in mandatory.");
 	  		var count = 0;
 	  		processStatus.websheets.status 	= websheets.public.status.SUCCESS;
 	  		var response;
 	  		do
 	  		{
 	  			count +=1;
+	  			console.log(doc.sessionId + ": posting to sheets...")
 	  			response = Meteor.call('postWebsheets', doc);
 	  			console.log(doc.sessionId + ": insert (new order) attempted count = " + count );
 	  		}while (count < websheets.private.generic.WEBSHEETS_MAX_RETRY && response.statusCode !== 200)
@@ -567,7 +592,55 @@ OrdersMeta.after.insert(function (userId, doc) {
 
 	 }
 	 console.log(doc.sessionId + ': Done posting to websheets');
-	 //End Sending the Websheets
+	 //End Sending to the Websheets
+
+
+
+    //Start Sending to Printer
+    if( isPrinterEnabled(doc.orgname))
+    {
+    	console.log(doc.sessionId + ": Printer is enabled.");
+		try{
+		  		var count = 0;
+		  		processStatus.printer.status 	= websheets.public.status.SUCCESS;
+		  		var response;
+		  		do
+		  		{
+		  			count +=1;
+		  			console.log(doc.sessionId + ": Printing...")
+		  			response = Meteor.call('postWebsheetsPrint', doc);
+		  			console.log(doc.sessionId + ": Posting to Printer server (new order) attempted count = " + count );
+		  		}while (count < websheets.private.generic.PRINTER_MAX_RETRY && response.statusCode !== 200)
+
+		  		if(response.statusCode !== 200)
+		  		{
+		  			console.log(doc.sessionId + ": Jay Todo: (Printer Failed) Send Email Notification to Webmaster and Owner");
+		  			processStatus.printer.status 	= websheets.public.status.FAILED;
+		  			processStatus.printer.response  = response ;
+
+		  		}
+		  		else
+		  		{
+		  			processStatus.printer.response  = response ;
+		  		}
+		 }catch(e)
+		 {
+		  		console.log(doc.sessionId + ": Caught error on posting printer server fatal error.", e);
+		  		console.log(doc.sessionId + ": Jay Todo: Send Email Notification to Webmaster and Owner");
+		  		processStatus.printer.status 		= websheets.public.status.FATAL;
+		  		processStatus.printer.error 		= e.toString();
+		  		processStatus.printer.errorStack 	= e.stack;
+
+		 }
+		 console.log(doc.sessionId + ': Done posting to printer server');
+	}
+	else
+	{
+	 	console.log(doc.sessionId + ': Printer is not enabled for this client')
+ 		processStatus.printer.status 	=	websheets.public.status.NOT_ENABLED;
+
+	}
+	 //End Sending to Printer	 
 
 	 //Start Sending Email
  	if(isEmailEnabled(doc.orgname))
@@ -867,13 +940,47 @@ OrdersMeta.after.insert(function (userId, doc) {
 		   console.log(hookSessionId + ': Menu.after.update:fieldNames = ' + JSON.stringify(fieldNames, null, 4));
 		   console.log(hookSessionId + ': Menu.after.update:modifier   = ' + JSON.stringify(modifier, null, 4));
 		   console.log(hookSessionId + ': Menu.after.update:options    = ' + JSON.stringify(options, null, 4));
-		   var categories = Settings.find({'Key':'category_menu'},{fields: {'Value' : 1}}).fetch();
+		   var categories = Settings.find({'Key':'category_menu', orgname:doc.orgname },{fields: {'Value' : 1}}).fetch();
 		   var totalMenuItemCount=0
 		   for (categoriesKey in categories)
 		   {
 
 		   		console.log(hookSessionId + ': Menu.after.update : Category Name 		= ' + categories[categoriesKey].Value);
-		   		var menuByCategoriesCount = Menu.find({'Category': categories[categoriesKey].Value}).count();
+		   		var menuByCategoriesCount = Menu.find(	{$and: [
+		   															{'Category':  categories[categoriesKey].Value},
+		   															{orgname:doc.orgname}, 
+							  										{Name : {"$exists" : true, "$ne" : ""}},
+						   											{ $or : [ 	{ $and: [	{ Price: {$exists : true }},
+															  								{ Price: { $ne : ""}},
+															  								{ Price: { $ne : 0}}
+															  							]
+															  					},
+															  					{ $and: [	{ PriceSmall: {$exists : true }},
+															  								{ PriceSmall: { $ne : ""}},
+															  								{ PriceSmall: { $ne : 0}}
+															  							]
+															  					},
+															  					{ $and: [	{ PriceMedium: {$exists : true }},
+															  								{ PriceMedium: { $ne : ""}},
+															  								{ PriceMedium: { $ne : 0}}
+															  							]
+															  					},
+															  					{ $and: [	{ PriceLarge: {$exists : true }},
+															  								{ PriceLarge: { $ne : ""}},
+															  								{ PriceLarge: { $ne : 0}}
+															  							]
+															  					},
+															  					{ $and: [	{ PriceXL: {$exists : true }},
+															  								{ PriceXL: { $ne : ""}},
+															  								{ PriceXL: { $ne : 0}}
+															  							]
+															  					}
+													  						]
+							  										}
+							  									]	
+
+		   												}).count();
+
 		   		console.log(hookSessionId + ': Menu.after.update : Menu Count by Category ' +  categories[categoriesKey].Value +' = ' + menuByCategoriesCount);
 		   		Settings.update({'Key':'category_menu', 'Value': categories[categoriesKey].Value, orgname:doc.orgname}, {$set:{'menuItemCount': menuByCategoriesCount}});
 		   		totalMenuItemCount += menuByCategoriesCount;
@@ -885,7 +992,7 @@ OrdersMeta.after.insert(function (userId, doc) {
 		   totalMenuItemCountObject.Value 		= totalMenuItemCount;
 		   totalMenuItemCountObject.orgname		= doc.orgname;
 		   console.log(hookSessionId + ': Menu.after.update: totalMenuItemCountObject       = ' + JSON.stringify(totalMenuItemCountObject, null, 4));
-		   Settings.update({'Key':'totalMenuItemCount', orgname:doc.orgname}, totalMenuItemCountObject, {upsert:true});
+		   GeneralMetaData.update({'Key':'totalMenuItemCount', orgname:doc.orgname}, totalMenuItemCountObject, {upsert:true});
 
 		   preProcessDmMetaData(hookSessionId , doc);
 
@@ -899,7 +1006,7 @@ OrdersMeta.after.insert(function (userId, doc) {
     {
     	var hookSessionId = Meteor.uuid();
 
-    	if(fieldNames[0] !== 'menuItemCount' &&  doc.Key !== 'totalMenuItemCount')
+    	if(fieldNames[0] !== 'menuItemCount')
     	{
 
     	   console.log(hookSessionId + ': Settings.after.update:userId     = ' + userId);
@@ -926,10 +1033,16 @@ OrdersMeta.after.insert(function (userId, doc) {
 
     preProcessDmMetaData = function(hookSessionId , doc)
     {
-    	var totalMenuCount 	= Settings.findOne({'Key':'totalMenuItemCount', orgname:doc.orgname});
+    	var totalMenuCount 	= GeneralMetaData.findOne({'Key':'totalMenuItemCount', orgname:doc.orgname});
+    	console.log(hookSessionId + ': preProcessDmMetaData: totalMenuCount 	= ' + totalMenuCount);
+
     	var dm_count_page 	= Settings.findOne({'Key':'dm_count_page', 		orgname:doc.orgname});
+    	console.log(hookSessionId + ': preProcessDmMetaData: dm_count_page   	= ' + dm_count_page);
+
+
     	var dm_count_column = Settings.findOne({'Key':'dm_count_column', 	orgname:doc.orgname});
-    	console.log(hookSessionId + ': preProcessDmMetaData: totalMenuCount 	= ' + totalMenuCount.Value);
+    	 console.log(hookSessionId + ': preProcessDmMetaData: dm_count_column 	= ' + dm_count_column);
+
 
     	var result 			= Settings.find({$and : [{Key: "category_menu"}, {orgname:doc.orgname}, {menuItemCount : {"$exists" : true, "$ne" : 0}}]},{sort:{sheetRowId: 1}}).fetch();
     	console.log(hookSessionId + ': preProcessDmMetaData: Total Valid Categories count (result.length)	= ' + result.length);

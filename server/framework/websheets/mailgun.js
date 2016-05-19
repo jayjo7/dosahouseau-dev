@@ -27,15 +27,18 @@ Meteor.methods({
 
       }
 
+      var contentToMailProvider = {
+                                    'to'     :   toEmailAddress,
+                                    'from'   :   fromEmailAddress(order.orgname),
+                                    'text'   :   body,
+                                    'subject':   subject
+
+                                  }
+      response.contentToMailProvider = contentToMailProvider;
+      console.log(sessionId +": emailOrderReady : response.contentToMailProvider: " +JSON.stringify(response.contentToMailProvider , null, 4));
               //Send Email to customer
         try{
-            var result = sendEmail.send({
-                                     'to'     :   toEmailAddress,
-                                     'from'   :   fromEmailAddress(order.orgname),
-                                     'text'   :   body,
-                                     'subject':   subject
-
-                                 });
+            var result = sendEmail.send(contentToMailProvider);
             response.result = result;
               
             console.log(sessionId +": emailOrderReady : result received from vendor: " +JSON.stringify(response.result, null, 4));
@@ -64,16 +67,20 @@ Meteor.methods({
         var subject       =   'Credit Card declined - ' + CLIENT_NAME ; 
         var body          =   Meteor.call('getSetting','order_status_alert_message' , order.orgname) + '\n\n' + buildOrderReceivedBody(order);
 
-        //Send Email to customer
-        try{
-            var result = sendEmail.send({
+        var contentToMailProvider = {
                                      'to'     :   order.CustomerEmail,
                                      'from'   :   fromEmailAddress(order.orgname) ,
                                      'bcc'    :   clientEmailAddress (order.orgname),
                                      'text'   :   body,
                                      'subject':   subject
 
-                                 });
+                                 };
+        response.contentToMailProvider = contentToMailProvider;
+
+      console.log(order.sessionId +": emailOrderReady : response.contentToMailProvider: " +JSON.stringify(response.contentToMailProvider , null, 4));
+        //Send Email to customer
+        try{
+            var result = sendEmail.send(contentToMailProvider);
             response.result = result;
             console.log(order.sessionId +": emailOrderReceived : result received from vendor: " +JSON.stringify(response.result, null, 4));
 
@@ -120,22 +127,31 @@ Meteor.methods({
 
           default:
             
-              subject             = 'Your Order [' + order.OrderNumber + ']';
+              subject                   = 'Your Order [' + order.OrderNumber + ']';
+              var WILL_BE_READY_IN      = Meteor.call('getSetting','will_be_ready_in' , order.orgname);
+              console.log(order.sessionId +": emailOrderReady : whoReceiving     = " + whoReceiving);
+              console.log(order.sessionId +": emailOrderReady : WILL_BE_READY_IN = " + WILL_BE_READY_IN);
+              if(WILL_BE_READY_IN)
+              {
+                 subject = subject + " will be ready in " + WILL_BE_READY_IN + " minutes";
+              }
               body                = buildOrderReceivedBody(order, 'os');
               toEmailAddress      =  order.CustomerEmail;
 
 
       }
+      var contentToMailProvider = {
+                                    'to'     :   toEmailAddress,
+                                    'from'   :   fromEmailAddress(order.orgname),
+                                    'text'   :   body,
+                                    'subject':   subject
 
+                                  };
+      response.contentToMailProvider = contentToMailProvider;
+      console.log(order.sessionId +": emailOrderReady : response.contentToMailProvider: " +JSON.stringify(response.contentToMailProvider , null, 4));
               //Send Email to customer
         try{
-            var result = sendEmail.send({
-                                     'to'     :   toEmailAddress,
-                                     'from'   :   fromEmailAddress(order.orgname),
-                                     'text'   :   body,
-                                     'subject':   subject
-
-                                 });
+            var result = sendEmail.send(contentToMailProvider);
             response.result = result;
               
             console.log(order.sessionId +": emailOrderReceived : result received from vendor: " +JSON.stringify(response.result, null, 4));
@@ -174,6 +190,7 @@ var initializeMailGun = function(orgname)
 
 var buildOrderReceivedBody = function(order, urlPath)
 {
+    console.log('buildOrderReceivedBody: order.orgname = ' + order.orgname);
 
     var CLIENT_PHONE_NUMBER   = Meteor.call('getSetting', 'phone_number'  , order.orgname);
     //console.log('buildOrderReceivedBody: CLIENT_PHONE_NUMBER = ' +CLIENT_PHONE_NUMBER);
@@ -181,9 +198,11 @@ var buildOrderReceivedBody = function(order, urlPath)
     //console.log('buildOrderReceivedBody: CLIENT_ADDRESS = ' +CLIENT_ADDRESS);    
     var CLIENT_NAME           = Meteor.call('getSetting','store_name' , order.orgname);
     //console.log('buildOrderReceivedBody: CLIENT_NAME = ' +CLIENT_NAME);    
-    var EMAIl_CUSTOM_MESSAGE     = Meteor.call('getSetting','email_custom_message' , order.orgname);
-    //console.log('buildOrderReceivedBody: EMAIl_CUSTOM_MESSAGE  = ' +EMAIl_CUSTOM_MESSAGE );    
-  
+    var EMAIl_CUSTOM_MESSAGE  = Meteor.call('getSetting','email_custom_message' , order.orgname);
+    //console.log('buildOrderReceivedBody: EMAIl_CUSTOM_MESSAGE  = ' +EMAIl_CUSTOM_MESSAGE );  
+    var WILL_BE_READY_IN      = Meteor.call('getSetting','will_be_ready_in' , order.orgname);
+      console.log('buildOrderReceivedBody: WILL_BE_READY_IN  = ' +WILL_BE_READY_IN );  
+
 	  var body= order.CustomerName + ', Thank you for your order.' +'\n\n' ;
 
         
@@ -205,7 +224,15 @@ var buildOrderReceivedBody = function(order, urlPath)
       //body = body + CLIENT_ADDRESS_LINE1 + '\n';
       //body = body + CLIENT_ADDRESS_LINE2+ '\n\n';
       body = body + CLIENT_ADDRESS+ '\n\n';
-      body = body + 'We will email you when your order is ready for pickup'+ '\n\n';
+
+      if(WILL_BE_READY_IN)
+      {
+          body = body + "Your order will be ready in "  + WILL_BE_READY_IN + " minutes for pickup" + '\n\n';
+      }
+      else
+      {
+          body = body + 'We will email you when your order is ready for pickup'+ '\n\n';
+      }
       
       
       

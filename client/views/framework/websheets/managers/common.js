@@ -25,32 +25,69 @@ Template.registerHelper('isItemInCart', function(faxNumber)
 
 });
 
+Template.registerHelper('getHours', function(whatDay)
+{       
+		var hours="";
+		var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+//Sunday		
+		var workHours = WorkHours.find({$and : [{Day: whatDay}, {orgname:orgname}, {OpenTime : {"$exists" : true, "$ne" : 0}}, {CloseTime : {"$exists" : true, "$ne" : 0}}]},{sort:{OpenTime: 1}}).fetch();
+        //console.log('workHours length = ' + workHours.length);
+        if( workHours.length > 0)
+        {	
+	        for(var key in workHours)
+	        {
+	            //console.log('OpenTime  = ' + workHours[key].OpenTime);
+	            //console.log('CloseTime = ' + workHours[key].CloseTime);
+	            var momentTimeOpen  = moment().utcOffset(Number(gmtOffset(orgname))).hour(workHours[key].OpenTime).minute(0).second(0);
+	            var momentTimeClose = moment().utcOffset(Number(gmtOffset(orgname))).hour(workHours[key].CloseTime).minute(0).second(0);
+	            if (!Number.isInteger(workHours[key].OpenTime))
+	            {
+	                var minutesOpen = workHours[key].OpenTime % 1;
+	                minutesOpen = Math.floor(minutesOpen * 100);
+	                //console.log('minutesOpen  = ' + minutesOpen);
+	                momentTimeOpen.minute(minutesOpen);
+	            }
+	            if (!Number.isInteger(workHours[key].CloseTime))
+	            {
+	                var minutesClose = workHours[key].CloseTime % 1;
+	                minutesClose = Math.floor(minutesClose * 100);
+	                //console.log('minutesClose  = ' + minutesClose);
+	                momentTimeClose.minute(minutesClose);
+	            }
 
-Template.registerHelper('hasFaxNumber', function(faxNumber)
+	           // hours +=  " "+ workHours[key].OpenTime + "-" + workHours[key].CloseTime;
+	            hours +=  " "+ momentTimeOpen.format('h:mm A')+ "-" + momentTimeClose.format('h:mm A');
+
+	        }
+	    }
+	    else
+	    {
+	    	hours = " Closed"  ;
+
+	    }
+
+	    return hours;
+
+});    
+
+Template.registerHelper('isMultiPriceItemInSession', function()
 {
-		if(faxNumber==undefined || faxNumber == null )
-		{
-			return false;
-		}
-		else
-		{
-			faxNumber = faxNumber.trim();
-			if(faxNumber.length > 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		var menu    = Session.get(websheets.public.generic.MENU_OBJECT_SESSION_KEY);
+        if(menu.Price)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+         }
 
-});
+});    
 
 Template.registerHelper('getSelectedItemSize', function(cartItem)
     {
         var htmlString ='';
-
+/*
         switch (cartItem.itemSize)
         {
             case websheets.public.size.SMALL:
@@ -73,6 +110,29 @@ Template.registerHelper('getSelectedItemSize', function(cartItem)
 
                 htmlString = '<span class="badge progress-bar-danger">'+ websheets.public.size.EXTRALARGE + '</span>';
         }
+*/
+        switch (cartItem.itemSize)
+        {
+            case websheets.public.size.SMALL:
+
+                htmlString = '<span>Size:&nbsp;' +  websheets.public.size.SMALL + '</span>';
+
+                break;
+
+            case websheets.public.size.MEDIUM:
+
+                  htmlString ='<span>Size:&nbsp;' + websheets.public.size.MEDIUM + '</span>';
+                break;
+
+            case  websheets.public.size.LARGE:
+
+               htmlString = '<span>Size:&nbsp;' + websheets.public.size.LARGE +'</span>';
+               break;
+
+            case websheets.public.size.EXTRALARGE:
+
+                htmlString = '<span>Size:&nbsp;' +  websheets.public.size.EXTRALARGE + '</span>';
+        }        
         return htmlString;
 
     });
@@ -80,23 +140,42 @@ Template.registerHelper('getSelectedItemSize', function(cartItem)
 Template.registerHelper('getSelectedSpiceLevel', function(cartItem)
     {
         var htmlString ='';
-
+/*
         switch (cartItem.spiceLevel)
         {
-            case websheets.public.spicy.MILD:
+            case websheets.public.spicy.ONE:
 
-                htmlString = '<span class="label label-success">' +  websheets.public.spicy.MILD + '</span>';
+                htmlString = '<span class="label label-success">' +  websheets.public.spicy.ONE + '</span>';
 
                 break;
 
-            case websheets.public.spicy.NORMAL:
+            case websheets.public.spicy.TWO:
 
-                  htmlString ='<span class="label label-warning">' + websheets.public.spicy.NORMAL + '</span>';
+                  htmlString ='<span class="label label-warning">' + websheets.public.spicy.TWO + '</span>';
                 break;
 
-            case websheets.public.spicy.SPICY:
+            case websheets.public.spicy.THREE:
 
-                htmlString = '<span class="label label-danger">'+ websheets.public.spicy.SPICY+ '</span>';
+                htmlString = '<span class="label label-danger">'+ websheets.public.spicy.THREE+ '</span>';
+        }
+
+*/
+        switch (cartItem.spiceLevel)
+        {
+            case websheets.public.spicy.ONE:
+
+                htmlString = '<span>Spice:&nbsp;'  +  websheets.public.spicy.ONE + '</span>';
+
+                break;
+
+            case websheets.public.spicy.TWO:
+
+                  htmlString ='<span>Spice:&nbsp;' + websheets.public.spicy.TWO + '</span>';
+                break;
+
+            case websheets.public.spicy.THREE:
+
+                htmlString = '<span>Spice:&nbsp;'+ websheets.public.spicy.THREE+ '</span>';
         }
         return htmlString;
 
@@ -105,12 +184,12 @@ Template.registerHelper('getSelectedSpiceLevel', function(cartItem)
 Template.registerHelper('hasValue', function(key)
 {
 	var menu = Session.get(websheets.public.generic.MENU_OBJECT_SESSION_KEY);
-	console.log('hasValue: menu      = '  + menu);
-	console.log('hasValue: given key =' + key);
+	//console.log('hasValue: menu      = '  + menu);
+	//console.log('hasValue: given key =' + key);
 	var value = menu[key];
-	console.log('hasValue: value = ' + value);
+	//console.log('hasValue: value = ' + value);
 	//value = value.trim();
-	console.log('hasValue: value = ' + value);
+	//console.log('hasValue: value = ' + value);
 
 	if(value)
 	{
@@ -126,9 +205,94 @@ Template.registerHelper('hasValue', function(key)
 Template.registerHelper('menu',function(categoryMenu)
 {
     var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
-    console.log('menu: ' + orgname);
+    //console.log('menu: ' + orgname);
+    //console.log('isItemCodeEnabled: ' + isItemCodeEnabled(orgname);
 
-	return Menu.find({$and : [{Category: categoryMenu}, {orgname:orgname}, {Name : {"$exists" : true, "$ne" : ""}}]},{sort:{sheetRowId: 1}});
+    if('ENABLED' === Meteor.settings.public[orgname].itemCode.toUpperCase())
+    {
+        	return Menu.find(	{$and : [
+		                      		{Category: categoryMenu}, 
+							  		{orgname:orgname}, 
+							  		{Name     : {"$exists" : true, "$ne" : ""}},
+							  		{ItemCode : {"$exists" : true, "$ne" : ""}},
+							  		{ $or : [ 	{ $and: [	{ Price: {$exists : true }},
+							  								{ Price: { $ne : ""}},
+							  								{ Price: { $ne : 0}},
+							  								{ Price: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceSmall: {$exists : true }},
+							  								{ PriceSmall: { $ne : ""}},
+							  								{ PriceSmall: { $ne : 0}},
+							  								{ PriceSmall: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceMedium: {$exists : true }},
+							  								{ PriceMedium: { $ne : ""}},
+							  								{ PriceMedium: { $ne : 0}},
+							  								{ PriceMedium: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceLarge: {$exists : true }},
+							  								{ PriceLarge: { $ne : ""}},
+							  								{ PriceLarge: { $ne : 0}},
+							  								{ PriceLarge: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceXL: {$exists : true }},
+							  								{ PriceXL: { $ne : ""}},
+							  								{ PriceXL: { $ne : 0}},
+							  								{ PriceXL: { $ne : "0"}}
+							  							]
+							  					}
+							  				]
+							  		}
+							  	]
+						},{sort:{sheetRowId: 1}});
+    }
+    else
+    {
+        	return Menu.find(	{$and : [
+		                      		{Category: categoryMenu}, 
+							  		{orgname:orgname}, 
+							  		{Name : {"$exists" : true, "$ne" : ""}},
+							  		{ $or : [ 	{ $and: [	{ Price: {$exists : true }},
+							  								{ Price: { $ne : ""}},
+							  								{ Price: { $ne : 0}},
+							  								{ Price: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceSmall: {$exists : true }},
+							  								{ PriceSmall: { $ne : ""}},
+							  								{ PriceSmall: { $ne : 0}},
+							  								{ PriceSmall: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceMedium: {$exists : true }},
+							  								{ PriceMedium: { $ne : ""}},
+							  								{ PriceMedium: { $ne : 0}},
+							  								{ PriceMedium: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceLarge: {$exists : true }},
+							  								{ PriceLarge: { $ne : ""}},
+							  								{ PriceLarge: { $ne : 0}},
+							  								{ PriceLarge: { $ne : "0"}}
+							  							]
+							  					},
+							  					{ $and: [	{ PriceXL: {$exists : true }},
+							  								{ PriceXL: { $ne : ""}},
+							  								{ PriceXL: { $ne : 0}},
+							  								{ PriceXL: { $ne : "0"}}
+							  							]
+							  					}
+							  				]
+							  		}
+							  	]
+						},{sort:{sheetRowId: 1}});
+    }
+
+
 
 });
 
@@ -177,7 +341,7 @@ Template.registerHelper('getOrders', function(StatusCode)
 {
 	var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
 
-	console.log('getOrders:StatusCode = ' +StatusCode);
+	//console.log('getOrders:StatusCode = ' +StatusCode);
 	return  Orders.find({orgname:orgname,StatusCode: StatusCode});
 
 });
@@ -199,7 +363,7 @@ Template.registerHelper('getSettingsArray', function(key)
 	//console.log('getSettingsArray:key = ' + key)
 	var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
 
-	var Settings = Content.findOne({$and : [{Key: key}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]})
+	var Settings = Settings.findOne({$and : [{Key: key}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]})
 
 
 
@@ -217,10 +381,10 @@ Template.registerHelper('getSettingsArray', function(key)
 Template.registerHelper('getSettingsMulti', function(key)
 {
 	var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
-
-	console.log('getSettingsMulti:key = ' + key)
+    //console.log('getSettingsMulti:orgname= ' + orgname)
+	//console.log('getSettingsMulti:key = ' + key)
 	var result = Settings.find({$and : [{Key: key}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]},{sort:{sheetRowId: 1}});
-	console.log('getSettingsMulti:Value = ' + result.Value)
+	//console.log('getSettingsMulti:Value = ' + result.Value)
 
 	return result
 });
@@ -280,6 +444,66 @@ Template.registerHelper('showCart', function()
 
 
 });
+
+Template.registerHelper('cartItemCount', function()
+{
+
+	    	var  sessid = Session.get('appUUID');
+            var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+
+            //console.log("shopCart:sessid =  " +sessid);
+
+			var cartItems = CartItems.find({session: sessid, orgname:orgname});
+		    //cartItems.itemCount = cartItems.count();
+		    //console.log("showCart:cartItems.itemCount =  " +cartItems.itemCount);
+		    return cartItems.count();
+
+
+
+});
+
+Template.registerHelper('getCountByItemInCart', function()
+{
+
+	    	var sessid 	= Session.get('appUUID');
+            var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+            var menu 	= Session.get(websheets.public.generic.MENU_OBJECT_SESSION_KEY);
+
+            //console.log("shopCart:sessid =  " +sessid);
+
+			var cartItems = CartItems.find({session: sessid, orgname:orgname, product:menu.UniqueId});
+		    //cartItems.itemCount = cartItems.count();
+		    //console.log("showCart:cartItems.itemCount =  " +cartItems.itemCount);
+		    if(cartItems)
+		    {
+		    	
+		    	var totalItemCount = 0;
+		    	cartItems.forEach (function (cartitem)
+				{
+					totalItemCount += Number(cartitem.qty);
+				});
+				return totalItemCount;
+		    }
+		    else
+		    {
+		    	return 0;
+		    }
+
+
+
+});
+
+Template.registerHelper('getItemNameInSession', function()
+{
+
+   		var menu = Session.get(websheets.public.generic.MENU_OBJECT_SESSION_KEY);
+
+   		return menu.Name 
+
+
+
+});
+
 
 Template.registerHelper('isMenuAvailable', function(categoryMenu)
 {
@@ -386,10 +610,9 @@ Template.registerHelper('formNotFilledMessage', function(stateLevel){
 	return websheets.public.generic.FORM_NOT_FILLED_MESSAGE;
 });
 
-
 validData = function(input)
 {
-	console.log("validData:input = " + input);
+	//console.log("validData:input = " + input);
 
 	if(input)
 	{
@@ -437,6 +660,7 @@ isPaymentBrainTree	 = function(orgname)
         return false;
     }
 }
+
 
 gmtOffset  	= function(orgname)
 {

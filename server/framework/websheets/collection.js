@@ -1,1 +1,2 @@
-SupportedTabs = new Mongo.Collection('supportedtabs');
+SupportedTabs 	= new Mongo.Collection('supportedtabs');
+GeneralMetaData = new  Mongo.Collection('generalMetaData');

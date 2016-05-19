@@ -3,36 +3,6 @@ var notificationkey = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY)
 
 Template.homePage.helpers({
 
-        idOddNumberItems: function(categoryMenu)
-    {
-                var menuCount = Menu.find({$and : [{Category: categoryMenu}, {Name : {"$exists" : true, "$ne" : ""}}]}).count();
-                console.log("menuCount = " + menuCount);
-                if(menuCount === 1)
-                {
-                    return true;
-                }
-                else if(menuCount > 1)
-                {
-                    console.log("menuCount %2 = " + menuCount % 2 );
-                    if(menuCount %2 === 1)
-                        return true;
-                    else
-                        return false;
-                }
-
-    },
-
-        isDrink:function(categoryMenu)
-    {
-        //console.log('isDrink:categoryMenu = ' +categoryMenu);
-        if('Drinks' === categoryMenu)
-            return true;
-        else
-            return false;
-
-
-    },
-
     getPriceString:function(menu)
     {
         if(menu.Price)
@@ -203,9 +173,58 @@ Template.homePage.helpers({
 
     isStoreClosed: function()
     {
+        var result = true;
+        var orgname     = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+        var momentDate  = moment().utcOffset(Number(gmtOffset(orgname)));
+        var currentDay  = moment().format("dddd").toString();
+        //var currentTime = momentDate.hour();
+        //console.log('currentDay  = ' + currentDay);
+        //console.log('currentTime = ' + currentTime);
 
-        var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
+        var workHours = WorkHours.find({$and : [{Day: currentDay}, {orgname:orgname}, {OpenTime : {"$exists" : true, "$ne" : 0}}, {CloseTime : {"$exists" : true, "$ne" : 0}}]},{sort:{sheetRowId: 1}}).fetch();
+        //console.log('workHours length = ' + workHours.length);
+        for(var key in workHours)
+        {
+            //console.log('OpenTime  = ' + workHours[key].OpenTime);
+            //console.log('CloseTime = ' + workHours[key].CloseTime);
+            var momentTimeOpen  = moment().utcOffset(Number(gmtOffset(orgname))).hour(workHours[key].OpenTime).minute(0).second(0);
+            var momentTimeClose = moment().utcOffset(Number(gmtOffset(orgname))).hour(workHours[key].CloseTime).minute(0).second(0);
+            if (!Number.isInteger(workHours[key].OpenTime))
+            {
+                var minutesOpen = workHours[key].OpenTime % 1;
+                minutesOpen = Math.floor(minutesOpen * 100);
+                //console.log('minutesOpen  = ' + minutesOpen);
+                momentTimeOpen.minute(minutesOpen);
+            }
+            if (!Number.isInteger(workHours[key].CloseTime))
+            {
+                var minutesClose = workHours[key].CloseTime % 1;
+                minutesClose = Math.floor(minutesClose * 100);
+                //console.log('minutesClose  = ' + minutesClose);
+                momentTimeClose.minute(minutesClose);
+            }
 
+
+            //console.log('momentTimeOpen  = ' + momentTimeOpen.format("dddd, MMMM Do YYYY, h:mm:ss A"));
+            //console.log('momentTimeClose = ' + momentTimeClose.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+            if(momentDate.isAfter(momentTimeOpen, "minutes") && momentDate.isBefore(momentTimeClose, "minutes"))
+            {
+                result = false;
+                break;
+            }
+
+        }
+        return result;
+
+
+/**
+        store_open_time           - REMOVED FROM THE SHEET
+        store_close_time          - REMOVED FROM THE SHEET
+        store_open_saturday       - REMOVED FROM THE SHEET
+        store_open_sunday         - REMOVED FROM THE SHEET
+        store_hours               - REMOVED FROM THE SHEET
+        store_open_time_weekend   - REMOVED FROM THE SHEET
+        store_close_time_weekend  - REMOVED FROM THE SHEET
         var store_open_time= Settings.findOne({$and : [{Key: "store_open_time"}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]});
         var store_close_time= Settings.findOne({$and : [{Key: "store_close_time"}, {orgname:orgname}, {Value : {"$exists" : true, "$ne" : ""}}]});
 
@@ -255,6 +274,7 @@ Template.homePage.helpers({
 
                 return true;
             }
+**/            
 
     },
 
@@ -286,15 +306,19 @@ Template.homePage.helpers({
     isItemInCart: function(product)
     {
 
-        var sessid = Session.get('appUUID');
+        var sessid  = Session.get('appUUID');
         var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
 
         var cartItems = CartItems.findOne({session: sessid, product:product, orgname:orgname});
 
             if(cartItems)
-                    return true;
+            {
+                return true;
+            }
             else
-            return false;
+            {
+                return false;
+            }
     },
 
     soldOutCss:function(fontLine, fontStyle)
@@ -311,6 +335,7 @@ Template.homePage.helpers({
 Template.homePage.events({
     'click .addcart': function(evt,tmpl)
     {
+
         var orgname         = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
         var currentTarget   = evt.currentTarget
         var product         = this.UniqueId ;
@@ -324,19 +349,21 @@ Template.homePage.events({
         cartItem.Category   = this.Category;
         cartItem.Price      = this.Price;
 
-        switch (addToCartToggle(orgname))
+/**        switch (addToCartToggle(orgname))
         {
             case  websheets.public.generic.INCREMENT :
 
                 cartItem.addToCartToggle    =  websheets.public.generic.INCREMENT;
                 cartItem.singlePricedItem   = true;
+                evt.currentTarget.className = "btn btn btn-sm pull-right  btn-ordered removecart"; 
+                evt.currentTarget.title     = 'Remove from Cart'  
                 break;
                 
             default:
                 evt.currentTarget.className = "btn btn btn-sm pull-right  btn-ordered removecart"; 
                 evt.currentTarget.title     ='Remove from Cart'          
         }
-
+*/
          Meteor.call('addToCart',  cartItem);
 
 
@@ -353,6 +380,8 @@ Template.homePage.events({
         switch (addToCartToggle(orgname))
         {
             case websheets.public.generic.INCREMENT :
+                evt.currentTarget.className = "btn btn-success btn-sm pull-right addcart"; 
+                evt.currentTarget.title='Add to Cart' 
                 break;
             default:
                 evt.currentTarget.className = "btn btn-success btn-sm pull-right addcart"; 

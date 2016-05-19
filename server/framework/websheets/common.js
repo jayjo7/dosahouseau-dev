@@ -1,5 +1,30 @@
 
 // Items that need to be move to config file
+
+isItemCodeEnabled       = function(orgname) 
+                          {
+                              if('ENABLED' === Meteor.settings.public[orgname].itemCode.toUpperCase())
+                              {
+                                  return true;
+                              }
+                              else
+                              {
+                                  return false;
+                              }
+                          }
+
+isPrintItemCode         = function(orgname) 
+                          {
+                              if('ENABLED' === Meteor.settings.public[orgname].printItemCode.toUpperCase())
+                              {
+                                  return true;
+                              }
+                              else
+                              {
+                                  return false;
+                              }
+                          }   
+
 rootUrl                 = function(orgname)
                           {
                             return Meteor.settings.private[orgname].rootUrl;
@@ -295,7 +320,48 @@ isPrinterEnabled		    = function(orgname)
                             {
                               return false;
                             }
-                          };            
+                          };   
+
+websheetsprintApiUrl   = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.apiUrl;
+
+                          };     
+
+websheetsprintApiKey   = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.apiKey;
+
+                          }; 
+
+websheetsprintUserName   = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.userName;
+
+                          };    
+
+websheetsprintDeviceName   = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.deviceName;
+
+                          };   
+websheetsprintOperation   = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.operation;
+
+                          };
+
+websheetsprintMode  = function(orgname)  
+                          {
+
+                              return Meteor.settings.private[orgname].websheetsprint.mode;
+
+                          };                                    
 
 gmtOffset              = function(orgname)
                           {
@@ -362,6 +428,20 @@ statusDescription = function (StatusCode)
       }
   }
 
+  getWillbeReadyIn = function (orgname)
+  {
+
+      return   getSetting('will_be_ready_in', orgname);
+
+  }
+
+  getStoreName = function (orgname)
+  {
+
+      return   getSetting('store_name', orgname);
+
+  }
+
 
 
 Meteor.methods({
@@ -402,8 +482,9 @@ Meteor.methods({
 
   getLocalTime:function(orgname)
   {
-
-      return moment().utcOffset(gmtOffset(orgname)).format('MM/DD/YYYY hh:mm:ss A');
+      var localTime = moment().utcOffset(Number(gmtOffset(orgname))).format('MM/DD/YYYY hh:mm:ss A');
+      console.log('getLocalTime: localTime  = ' + localTime) ;
+      return localTime;
 
   }
 
