@@ -6,15 +6,19 @@
           <div class="row">
             <div class="footer-col col-md-4">
               <h3>Hours</h3>
-              <div>
-                <p>SUN&nbsp;:{{getHours 'Sunday'}}</p>
-                <p>MON&nbsp;:{{getHours 'Monday'}}</p>
-                <p>TUE&nbsp;:{{getHours 'Tuesday'}}</p>
-                <p>WED&nbsp;:{{getHours 'Wednesday'}}</p>
-                <p>THU&nbsp;:{{getHours 'Thursday'}}</p>
-                <p>FRI&nbsp;:{{getHours 'Friday'}}</p>
-                <p>SAT&nbsp;:{{getHours 'Saturday'}}</p>
-              </div>
+              {{#if Template.subscriptionsReady}}
+                <div>
+                  <p>SUN&nbsp;:{{getHours 'Sunday'}}</p>
+                  <p>MON&nbsp;:{{getHours 'Monday'}}</p>
+                  <p>TUE&nbsp;:{{getHours 'Tuesday'}}</p>
+                  <p>WED&nbsp;:{{getHours 'Wednesday'}}</p>
+                  <p>THU&nbsp;:{{getHours 'Thursday'}}</p>
+                  <p>FRI&nbsp;:{{getHours 'Friday'}}</p>
+                  <p>SAT&nbsp;:{{getHours 'Saturday'}}</p>
+                </div>
+              {{else}}
+                Loading...
+              {{/if}}
             </div>
              <div class="footer-col col-md-4">
               <h3>Connect</h3>
