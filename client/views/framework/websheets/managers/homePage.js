@@ -217,10 +217,6 @@ Template.homePage.helpers({
 
             }
         }
-        else
-        {
-            result = false;
-        }
         return result;
 
 
