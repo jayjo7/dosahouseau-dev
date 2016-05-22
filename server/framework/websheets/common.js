@@ -483,7 +483,7 @@ Meteor.methods({
   getLocalTime:function(orgname)
   {
       var localTime = moment().utcOffset(Number(gmtOffset(orgname))).format('MM/DD/YYYY hh:mm:ss A');
-      console.log('getLocalTime: localTime  = ' + localTime) ;
+      //console.log('getLocalTime: localTime  = ' + localTime) ;
       return localTime;
 
   }

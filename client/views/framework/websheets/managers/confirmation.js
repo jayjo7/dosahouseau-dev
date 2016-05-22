@@ -63,7 +63,7 @@ Template.confirmation.helpers({
 
   haveETA: function(uniqueId)
   {
-      console.log('isReady:uniqueId = ' + uniqueId);
+      //console.log('isReady:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
       
 
@@ -166,7 +166,7 @@ Template.confirmation.helpers({
 
   message: function(order)
 	{
-		  console.log('message:uniqueId = ' + order.UniqueId);
+		  //console.log('message:uniqueId = ' + order.UniqueId);
 
       var messageKey='message_confirmation';
       if(websheets.public.orderState.THREE === order.Status)
@@ -181,14 +181,14 @@ Template.confirmation.helpers({
 		  var confirmation = Settings.findOne({$and : [{Key: messageKey}, {orgname:order.orgname}, {Value : {"$exists" : true, "$ne" : ""}}]});
 
 		  var value = confirmation['Value'];
-		  console.log(' confirmation value = ' + value);
+		  //console.log(' confirmation value = ' + value);
 
 		  var confirmationArray = value.split('\n\n' );
 
-		  for(key in confirmationArray)
-		  {
-		      console.log(key + " = " + confirmationArray[key]);
-		  }
+//		  for(key in confirmationArray)
+//		  {
+//		      console.log(key + " = " + confirmationArray[key]);
+//		  }
 
 		  return confirmationArray;
 
@@ -204,7 +204,7 @@ Template.confirmation.helpers({
 
   haveTax:function(uniqueId)
   {
-      console.log('haveTax:uniqueId = ' + uniqueId);
+//      console.log('haveTax:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);
 
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
@@ -261,7 +261,7 @@ Template.confirmation.helpers({
 
   haveDiscount:function(uniqueId)
   {
-      console.log('haveDiscount:uniqueId = ' + uniqueId);
+//      console.log('haveDiscount:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);      
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       return validData(orderMeta.discount);
@@ -270,7 +270,7 @@ Template.confirmation.helpers({
 
   showSubTotal:function(uniqueId)
   {
-      console.log('showSubTotal:uniqueId = ' + uniqueId);
+//      console.log('showSubTotal:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);      
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       if(orderMeta.tax || orderMeta.discount)
@@ -281,7 +281,7 @@ Template.confirmation.helpers({
 
   getPaymentOption:function(uniqueId)
   {
-      console.log('getPaymentOption:uniqueId = ' + uniqueId);
+//      console.log('getPaymentOption:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);      
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       return orderMeta.Payment;
@@ -290,7 +290,7 @@ Template.confirmation.helpers({
 
   getDeliveryOption:function(uniqueId)
   {
-      console.log('getPaymentOption:uniqueId = ' + uniqueId);
+//      console.log('getPaymentOption:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);      
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       return orderMeta.Delivery;
@@ -300,7 +300,7 @@ Template.confirmation.helpers({
   isOrderStatusAlert:function(uniqueId)
   {
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY);  
-      console.log('isOrderStatusAlert:uniqueId = ' + uniqueId);
+//      console.log('isOrderStatusAlert:uniqueId = ' + uniqueId);
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       if(orderMeta.orderStatusAlert)
       {
@@ -314,7 +314,7 @@ Template.confirmation.helpers({
 
   getOrderStatusAlert:function(uniqueId)
   {
-      console.log('getOrderStatusAlert:uniqueId = ' + uniqueId);
+//      console.log('getOrderStatusAlert:uniqueId = ' + uniqueId);
       var orgname = Session.get(websheets.public.generic.ORG_NAME_SESSION_KEY); 
       var orderMeta = OrdersMeta.findOne({UniqueId:uniqueId, orgname:orgname});
       return orderMeta.orderStatusAlert;
